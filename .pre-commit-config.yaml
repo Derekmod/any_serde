@@ -1,0 +1,30 @@
+default_language_version:
+    python: python
+
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+    -   id: debug-statements
+    -   id: end-of-file-fixer
+        exclude: "^.*.txt|^build.*"  # May need to add to this list
+    -   id: requirements-txt-fixer
+    -   id: trailing-whitespace
+        exclude: "^.*.txt|^build.*"
+    -   id: no-commit-to-branch  # protect against accidentally committing to master
+
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  # Ruff version.
+  rev: v0.0.286
+  hooks:
+    - id: ruff
+      args: [--fix, --exit-non-zero-on-fix]
+      exclude: "^build.*"
+
+-   repo: https://github.com/psf/black
+    rev: 22.8.0
+    hooks:
+    -   id: black
+        language: python
+        types: [python]
+        exclude: "^build.*"
