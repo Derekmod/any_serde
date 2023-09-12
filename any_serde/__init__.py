@@ -3,6 +3,7 @@ from .serde import (
     to_data,
 )
 from .common import (
+    JSON,
     InvalidDeserializationException,
     InvalidSerializationException,
 )
@@ -10,6 +11,7 @@ from .common import (
 __all__ = [
     "from_data",
     "to_data",
+    "JSON",
     "InvalidDeserializationException",
     "InvalidSerializationException",
 ]
