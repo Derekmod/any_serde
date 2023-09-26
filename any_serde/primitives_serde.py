@@ -1,4 +1,4 @@
-from typing import TypeVar, Any
+from typing import Type, TypeVar, Any
 
 from any_serde.common import (
     JSON_PRIMITIVE_TYPES,
@@ -14,7 +14,7 @@ def is_primitive_type(typ: Any) -> bool:
     return typ in JSON_PRIMITIVE_TYPES
 
 
-def from_data(type_: type[T_JSONPrimitive], data: JSON) -> T_JSONPrimitive:
+def from_data(type_: Type[T_JSONPrimitive], data: JSON) -> T_JSONPrimitive:
     assert is_primitive_type(type_), f"Can only call primitives_serde.from_data on primitive types! Got {type_}"
 
     if type_ is float and isinstance(data, int):

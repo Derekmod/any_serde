@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import dataclasses
 from functools import lru_cache
-from typing import Any, TypeVar, get_type_hints
+from typing import Any, Dict, Type, TypeVar, get_type_hints
 from any_serde.common import (
     JSON,
     InvalidDeserializationException,
@@ -18,7 +18,7 @@ def is_dataclass_type(typ: Any) -> bool:
 
 
 @lru_cache(maxsize=None)
-def _get_type_hints(typ: type[object]) -> dict[str, type[Any]]:
+def _get_type_hints(typ: Type[object]) -> Dict[str, Type[Any]]:
     return get_type_hints(typ)
 
 
@@ -32,7 +32,7 @@ def _field_is_required(field: dataclasses.Field) -> bool:
     return True
 
 
-def from_data(type_: type[T_Dataclass], data: JSON) -> T_Dataclass:
+def from_data(type_: Type[T_Dataclass], data: JSON) -> T_Dataclass:
     if not isinstance(data, dict):
         raise InvalidDeserializationException(f"Dataclasses serialize to dict. Got {type(data)} instead!")
 
