@@ -152,9 +152,15 @@ def dataclass_from_environ(
         elif issubclass(value_type, bool):
             parsed_value = bool(raw_value)
         elif issubclass(value_type, float):
-            parsed_value = float(raw_value)
+            try:
+                parsed_value = float(raw_value)
+            except ValueError as err:
+                raise InvalidDeserializationException from err
         elif issubclass(value_type, int):
-            float_value = float(raw_value)
+            try:
+                float_value = float(raw_value)
+            except ValueError as err:
+                raise InvalidDeserializationException from err
             int_value = int(float_value)
             if float_value != int_value:
                 raise ValueError(f"Could not convert {raw_value} to int!")
