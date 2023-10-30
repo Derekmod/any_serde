@@ -4,7 +4,8 @@ from __future__ import annotations
 import dataclasses
 from functools import lru_cache
 import functools
-from typing import Any, Dict, Type, TypeVar, get_type_hints
+import os
+from typing import Any, Dict, Optional, Type, TypeVar, get_type_hints
 from any_serde.common import (
     JSON,
     InvalidDeserializationException,
@@ -124,3 +125,43 @@ def to_data(type_: Type[T_Dataclass], item: T_Dataclass) -> JSON:
 
 def register_serialization_renames(serialization_renames: Dict[str, str], type_: T_Dataclass) -> None:
     setattr(type_, ATTR_SERIALIZATION_RENAMES, serialization_renames)
+
+
+def dataclass_from_environ(
+    dataclass_type: Type[T_Dataclass],
+    environ: Optional[os._Environ] = None,
+) -> T_Dataclass:
+    if environ is None:
+        environ = os.environ
+
+    field_types = _get_type_hints(dataclass_type)  # type: ignore
+
+    dataclass_args: Dict[str, JSON] = {}
+    for field in dataclasses.fields(dataclass_type):  # type: ignore[arg-type]
+        field_env_name = field.name.upper()
+        if field_env_name not in environ:
+            if _field_is_required(field):
+                raise ValueError(f"Env var not set: {field_env_name}")
+            continue
+
+        raw_value: str = environ[field_env_name]
+        value_type = field_types[field.name]
+
+        if issubclass(value_type, str):
+            parsed_value: JSON = raw_value
+        elif issubclass(value_type, bool):
+            parsed_value = bool(raw_value)
+        elif issubclass(value_type, float):
+            parsed_value = float(raw_value)
+        elif issubclass(value_type, int):
+            float_value = float(raw_value)
+            int_value = int(float_value)
+            if float_value != int_value:
+                raise ValueError(f"Could not convert {raw_value} to int!")
+            parsed_value = int_value
+        else:
+            raise ValueError(f"Cannot parse {value_type} from env vars yet!")
+
+        dataclass_args[field.name] = parsed_value
+
+    return dataclass_type(**dataclass_args)
