@@ -41,6 +41,9 @@ def _get_serialization_renames(dataclass_type: Type[object]) -> Dict[str, str]:
     error_msg_start = f"Illegal {ATTR_SERIALIZATION_RENAMES} value for {dataclass_type}!"
 
     serialization_renames = getattr(dataclass_type, ATTR_SERIALIZATION_RENAMES)
+    if serialization_renames is None:
+        return {}
+
     if not isinstance(serialization_renames, dict):
         raise AssertionError(f"{error_msg_start} Not a dictionary!")
 
