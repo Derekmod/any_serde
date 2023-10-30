@@ -40,10 +40,7 @@ def _field_is_required(field: dataclasses.Field) -> bool:
 def _get_serialization_renames(dataclass_type: Type[object]) -> Dict[str, str]:
     error_msg_start = f"Illegal {ATTR_SERIALIZATION_RENAMES} value for {dataclass_type}!"
 
-    serialization_renames = getattr(dataclass_type, ATTR_SERIALIZATION_RENAMES)
-    if serialization_renames is None:
-        return {}
-
+    serialization_renames = getattr(dataclass_type, ATTR_SERIALIZATION_RENAMES, {})
     if not isinstance(serialization_renames, dict):
         raise AssertionError(f"{error_msg_start} Not a dictionary!")
 
@@ -79,23 +76,24 @@ def from_data(type_: Type[T_Dataclass], data: JSON) -> T_Dataclass:
     fields_without_types = set(dataclass_fields) - set(field_types)
     assert not fields_without_types, f"Fields without types: {fields_without_types}"
 
-    data_without_fields = set(data) - set(dataclass_fields)
+    serialization_renames = _get_serialization_renames(type_)  # type: ignore[arg-type]
+    deserialization_renames = {data_key: attribute_key for attribute_key, data_key in serialization_renames.items()}
+    mapped_data = {deserialization_renames.get(data_key, data_key): data_value for data_key, data_value in data.items()}
+
+    data_without_fields = set(mapped_data) - set(dataclass_fields)
     assert not data_without_fields, f"Data keys without fields: {data_without_fields}"
 
     required_field_names = [field_name for field_name, field in dataclass_fields.items() if _field_is_required(field)]
 
-    missing_required_fields = set(required_field_names) - set(data)
+    missing_required_fields = set(required_field_names) - set(mapped_data)
     if missing_required_fields:
         raise InvalidDeserializationException(f"Data is missing required fields: {missing_required_fields}")
-
-    serialization_renames = _get_serialization_renames(type_)  # type: ignore[arg-type]
-    deserialization_renames = {data_key: attribute_key for attribute_key, data_key in serialization_renames.items()}
 
     from any_serde import serde
 
     casted_data = {
-        deserialization_renames.get(field_name, field_name): serde.from_data(field_types[field_name], field_data)
-        for field_name, field_data in data.items()
+        field_name: serde.from_data(field_types[field_name], field_data)
+        for field_name, field_data in mapped_data.items()
     }
 
     return type_(**casted_data)
@@ -122,3 +120,7 @@ def to_data(type_: Type[T_Dataclass], item: T_Dataclass) -> JSON:
         )
         for field_name in dataclass_field_names
     }
+
+
+def register_serialization_renames(serialization_renames: Dict[str, str], type_: T_Dataclass) -> None:
+    setattr(type_, ATTR_SERIALIZATION_RENAMES, serialization_renames)
