@@ -1,6 +1,7 @@
 import types
 from typing import (
     Any,
+    Dict,
     Literal,
     Type,
     TypeVar,
@@ -21,7 +22,7 @@ T_Any = TypeVar("T_Any")
 
 
 def from_data(
-    type_: type[T_Any],
+    type_: Type[T_Any],
     data: JSON,
 ) -> T_Any:
     """Constructs a python variable of the given type from JSON data.
@@ -165,7 +166,7 @@ def to_data(type_: Type[T_Any], item: T_Any) -> JSON:
 
         key_type, value_type = type_args
 
-        data: dict[str, Any] = {}
+        data: Dict[str, Any] = {}
 
         for key, value in item.items():
             key_data = to_data(key_type, key)

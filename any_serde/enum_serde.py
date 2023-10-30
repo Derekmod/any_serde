@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import TypeVar, Any
+from typing import Type, TypeVar, Any
 from any_serde.common import InvalidDeserializationException, JSON
 
 T_Enum = TypeVar("T_Enum", bound=Enum)
@@ -9,7 +9,7 @@ def is_enum_type(typ: Any) -> bool:
     return isinstance(typ, type) and issubclass(typ, Enum)
 
 
-def from_data(type_: type[T_Enum], data: JSON) -> T_Enum:
+def from_data(type_: Type[T_Enum], data: JSON) -> T_Enum:
     if not isinstance(data, str):
         raise InvalidDeserializationException(f"Enums serialize to strings. Got {type(data)} instead!")
 
