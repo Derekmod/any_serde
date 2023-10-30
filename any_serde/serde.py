@@ -135,7 +135,7 @@ def to_data(type_: Type[T_Any], item: T_Any) -> JSON:
     if dataclass_serde.is_dataclass_type(type_):
         if type(item) is not type_:
             raise InvalidSerializationException(f"Specified type_ {type_} does not match item type {type(item)}!")
-        return dataclass_serde.to_data(item)  # type: ignore
+        return dataclass_serde.to_data(type_, item)
 
     type_origin_nullable = get_origin(type_)
     if type_origin_nullable is None:

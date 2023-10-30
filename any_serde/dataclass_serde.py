@@ -14,7 +14,7 @@ from any_serde.common import (
 ATTR_SERIALIZATION_RENAMES = "__serialization_renames__"
 
 
-T_Dataclass = TypeVar("T_Dataclass")
+T_Dataclass = TypeVar("T_Dataclass", bound=object)
 
 
 def is_dataclass_type(typ: Any) -> bool:
@@ -101,15 +101,15 @@ def from_data(type_: Type[T_Dataclass], data: JSON) -> T_Dataclass:
     return type_(**casted_data)
 
 
-def to_data(item: object) -> JSON:
+def to_data(type_: Type[T_Dataclass], item: T_Dataclass) -> JSON:
     type_ = type(item)
 
     assert is_dataclass_type(type_), "Can only call dataclass_serde.to_data on dataclass instances!"
 
     field_types = _get_type_hints(type_)  # type: ignore
-    dataclass_fields = {x.name: x for x in dataclasses.fields(type_)}  # type: ignore
+    dataclass_field_names = {x.name for x in dataclasses.fields(type_)}  # type: ignore
 
-    fields_without_types = set(dataclass_fields) - set(field_types)
+    fields_without_types = set(dataclass_field_names) - set(field_types)
     assert not fields_without_types, f"Fields without types: {fields_without_types}"
 
     serialization_renames = _get_serialization_renames(type_)  # type: ignore[arg-type]
@@ -120,5 +120,5 @@ def to_data(item: object) -> JSON:
         serialization_renames.get(field_name, field_name): serde.to_data(
             field_types[field_name], getattr(item, field_name)
         )
-        for field_name in dataclass_fields
+        for field_name in dataclass_field_names
     }
