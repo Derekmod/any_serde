@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 
 from any_serde import dataclass_serde
@@ -48,3 +50,41 @@ def test_remapped_dataclass() -> None:
 
     assert dataclass_serde.to_data(RemappedDataclass, expected_object) == expected_data
     assert dataclass_serde.from_data(RemappedDataclass, expected_data) == expected_object
+
+
+@dataclass
+class RecursiveDataclass:
+    name: str
+    children: list[RecursiveDataclass]
+
+
+def test_recursive_dataclass() -> None:
+    expected_object = RecursiveDataclass(
+        name="root",
+        children=[
+            RecursiveDataclass(
+                name="brother",
+                children=[],
+            ),
+            RecursiveDataclass(
+                name="sister",
+                children=[],
+            ),
+        ],
+    )
+    expected_data: JSON = {
+        "name": "root",
+        "children": [
+            {
+                "name": "brother",
+                "children": [],
+            },
+            {
+                "name": "sister",
+                "children": [],
+            },
+        ],
+    }
+
+    assert dataclass_serde.to_data(RecursiveDataclass, expected_object) == expected_data
+    assert dataclass_serde.from_data(RecursiveDataclass, expected_data) == expected_object
