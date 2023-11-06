@@ -59,7 +59,7 @@ class RecursiveDataclass:
 
 
 def test_recursive_dataclass() -> None:
-    RecursiveDataclass(
+    expected_object = RecursiveDataclass(
         name="root",
         children=[
             RecursiveDataclass(
@@ -72,3 +72,19 @@ def test_recursive_dataclass() -> None:
             ),
         ],
     )
+    expected_data: JSON = {
+        "name": "root",
+        "children": [
+            {
+                "name": "brother",
+                "children": [],
+            },
+            {
+                "name": "sister",
+                "children": [],
+            },
+        ],
+    }
+
+    assert dataclass_serde.to_data(RecursiveDataclass, expected_object) == expected_data
+    assert dataclass_serde.from_data(RecursiveDataclass, expected_data) == expected_object
