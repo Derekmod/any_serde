@@ -104,12 +104,17 @@ def from_data(type_: Type[T_Dataclass], data: JSON) -> T_Dataclass:
         unknown_data_keys_policy = _get_unknown_data_keys_policy(type_)
         if not unknown_data_keys_policy.allow:
             # TODO: not intuitive that these printed are after mapping. Either print before map or explain.
-            raise ValueError(f"Parsing {type_}, got data keys without fields: {data_keys_without_fields}")
+            raise InvalidDeserializationException(
+                f"Parsing {type_}, got data keys without fields: {data_keys_without_fields}"
+            )
 
-        injected_data = {data_key: mapped_data[data_key] for data_key in data_keys_without_fields}
+        if unknown_data_keys_policy.roundtrip:
+            injected_data = {data_key: mapped_data[data_key] for data_key in data_keys_without_fields}
 
         mapped_data = {
-            mapped_key: mapped_value for mapped_key, mapped_value in mapped_data if mapped_key in dataclass_fields
+            mapped_key: mapped_value
+            for mapped_key, mapped_value in mapped_data.items()
+            if mapped_key in dataclass_fields
         }
 
     required_field_names = [field_name for field_name, field in dataclass_fields.items() if _field_is_required(field)]
