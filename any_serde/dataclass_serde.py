@@ -124,6 +124,8 @@ def to_data(type_: Type[T_Dataclass], item: T_Dataclass) -> JSON:
 
 
 def register_serialization_renames(serialization_renames: Dict[str, str], type_: T_Dataclass) -> None:
+    """Allows the serialization for a dataclass to have different keys than the dataclass."""
+    # TODO: validate serialization renames here as well
     setattr(type_, ATTR_SERIALIZATION_RENAMES, serialization_renames)
 
 
