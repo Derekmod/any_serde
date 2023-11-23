@@ -10,6 +10,7 @@ from .common import (
 from .dataclass_serde import (
     dataclass_from_environ,
     register_serialization_renames,
+    allow_unknown_data_keys,
 )
 
 __all__ = [
@@ -20,4 +21,5 @@ __all__ = [
     "InvalidSerializationException",
     "dataclass_from_environ",
     "register_serialization_renames",
+    "allow_unknown_data_keys",
 ]

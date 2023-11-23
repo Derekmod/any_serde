@@ -2,10 +2,9 @@
 from __future__ import annotations
 
 import dataclasses
-from functools import lru_cache
 import functools
 import os
-from typing import Any, Dict, Optional, Type, TypeVar, get_type_hints
+from typing import Any, Dict, Optional, Type, TypeVar, cast, get_type_hints
 from any_serde.common import (
     JSON,
     InvalidDeserializationException,
@@ -24,7 +23,7 @@ def is_dataclass_type(typ: Any) -> bool:
     return isinstance(typ, type) and dataclasses.is_dataclass(typ)
 
 
-@lru_cache(maxsize=None)
+@functools.lru_cache(None)
 def _get_type_hints(typ: Type[object]) -> Dict[str, Type[Any]]:
     return get_type_hints(typ)
 
@@ -67,7 +66,6 @@ def _get_serialization_renames(dataclass_type: Type[T_Dataclass]) -> Dict[str, s
     return serialization_renames
 
 
-@functools.lru_cache(None)
 def _get_unknown_data_keys_policy(dataclass_type: Type[T_Dataclass]) -> UnknownDataKeysPolicy:
     if not hasattr(dataclass_type, ATTR_UNKNOWN_DATA_KEYS_POLICY):
         return UnknownDataKeysPolicy(
@@ -80,6 +78,14 @@ def _get_unknown_data_keys_policy(dataclass_type: Type[T_Dataclass]) -> UnknownD
     assert isinstance(policy, UnknownDataKeysPolicy), "Bad data keys policy"
 
     return policy
+
+
+# necessary for mypy. Otherwise it doesn't recognize type as hashable and fails when
+# calling lru_cache_wrapper
+_get_unknown_data_keys_policy = cast(
+    Any,
+    functools.lru_cache(None)(_get_unknown_data_keys_policy),
+)
 
 
 def from_data(type_: Type[T_Dataclass], data: JSON) -> T_Dataclass:
@@ -181,7 +187,7 @@ class UnknownDataKeysPolicy:
     roundtrip: bool
 
 
-def allow_unknown_data_keys(type_: T_Dataclass, *, roundtrip: bool = False) -> None:
+def allow_unknown_data_keys(type_: T_Dataclass, *, roundtrip: bool) -> None:
     policy = UnknownDataKeysPolicy(
         allow=True,
         roundtrip=roundtrip,

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Dict
 import pytest
 
 from any_serde import InvalidDeserializationException, dataclass_serde
@@ -109,11 +110,11 @@ class BasicDataclassAllowUnknown:
     value: int
 
 
-dataclass_serde.allow_unknown_data_keys(BasicDataclassAllowUnknown)
+dataclass_serde.allow_unknown_data_keys(BasicDataclassAllowUnknown, roundtrip=False)
 
 
 def test_unknown_data_keys() -> None:
-    data = {
+    data: Dict[str, JSON] = {
         "name": "test name",
         "value": 0,
         "extra_key": True,
@@ -144,7 +145,7 @@ dataclass_serde.allow_unknown_data_keys(BasicDataclassAllowUnknownRoundtrip, rou
 
 
 def test_unknown_data_keys_roundtrip() -> None:
-    data = {
+    data: Dict[str, JSON] = {
         "name": "test name",
         "value": 0,
         "extra_key": True,
