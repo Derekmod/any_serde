@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Dict
+import pytest
 
-from any_serde import dataclass_serde
+from any_serde import InvalidDeserializationException, dataclass_serde
 from any_serde.common import JSON
 
 
@@ -88,3 +90,73 @@ def test_recursive_dataclass() -> None:
 
     assert dataclass_serde.to_data(RecursiveDataclass, expected_object) == expected_data
     assert dataclass_serde.from_data(RecursiveDataclass, expected_data) == expected_object
+
+
+def test_unknown_data_keys_fails() -> None:
+    with pytest.raises(InvalidDeserializationException):
+        dataclass_serde.from_data(
+            BasicDataclass,
+            {
+                "name": "test name",
+                "value": 0,
+                "extra_key": True,
+            },
+        )
+
+
+@dataclass
+class BasicDataclassAllowUnknown:
+    name: str
+    value: int
+
+
+dataclass_serde.allow_unknown_data_keys(BasicDataclassAllowUnknown, roundtrip=False)
+
+
+def test_unknown_data_keys() -> None:
+    data: Dict[str, JSON] = {
+        "name": "test name",
+        "value": 0,
+        "extra_key": True,
+    }
+    expected_obj = BasicDataclassAllowUnknown(
+        name="test name",
+        value=0,
+    )
+    expected_roundtrip_data = {
+        "name": "test name",
+        "value": 0,
+    }
+    deserde_obj = dataclass_serde.from_data(BasicDataclassAllowUnknown, data)
+
+    assert deserde_obj == expected_obj
+    assert dataclass_serde.to_data(BasicDataclassAllowUnknown, expected_obj) == expected_roundtrip_data
+    assert not hasattr(deserde_obj, dataclass_serde.ATTR_INJECTED_DATA)
+    assert dataclass_serde.to_data(BasicDataclassAllowUnknown, deserde_obj) == expected_roundtrip_data
+
+
+@dataclass
+class BasicDataclassAllowUnknownRoundtrip:
+    name: str
+    value: int
+
+
+dataclass_serde.allow_unknown_data_keys(BasicDataclassAllowUnknownRoundtrip, roundtrip=True)
+
+
+def test_unknown_data_keys_roundtrip() -> None:
+    data: Dict[str, JSON] = {
+        "name": "test name",
+        "value": 0,
+        "extra_key": True,
+    }
+    expected_obj = BasicDataclassAllowUnknownRoundtrip(
+        name="test name",
+        value=0,
+    )
+    expected_roundtrip_data = data
+    deserde_obj = dataclass_serde.from_data(BasicDataclassAllowUnknownRoundtrip, data)
+
+    assert deserde_obj == expected_obj
+    assert dataclass_serde.to_data(BasicDataclassAllowUnknownRoundtrip, expected_obj) != expected_roundtrip_data
+    assert dataclass_serde.to_data(BasicDataclassAllowUnknownRoundtrip, deserde_obj) == expected_roundtrip_data
