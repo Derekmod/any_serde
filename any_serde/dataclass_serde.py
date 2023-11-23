@@ -4,7 +4,7 @@ from __future__ import annotations
 import dataclasses
 import functools
 import os
-from typing import Any, Dict, Optional, Type, TypeVar, cast, get_type_hints
+from typing import Any, Dict, Optional, Type, TypeVar, get_type_hints
 from any_serde.common import (
     JSON,
     InvalidDeserializationException,
@@ -66,6 +66,7 @@ def _get_serialization_renames(dataclass_type: Type[T_Dataclass]) -> Dict[str, s
     return serialization_renames
 
 
+@functools.lru_cache(None)
 def _get_unknown_data_keys_policy(dataclass_type: Type[T_Dataclass]) -> UnknownDataKeysPolicy:
     if not hasattr(dataclass_type, ATTR_UNKNOWN_DATA_KEYS_POLICY):
         return UnknownDataKeysPolicy(
@@ -78,14 +79,6 @@ def _get_unknown_data_keys_policy(dataclass_type: Type[T_Dataclass]) -> UnknownD
     assert isinstance(policy, UnknownDataKeysPolicy), "Bad data keys policy"
 
     return policy
-
-
-# necessary for mypy. Otherwise it doesn't recognize type as hashable and fails when
-# calling lru_cache_wrapper
-_get_unknown_data_keys_policy = cast(
-    Any,
-    functools.lru_cache(None)(_get_unknown_data_keys_policy),
-)
 
 
 def from_data(type_: Type[T_Dataclass], data: JSON) -> T_Dataclass:
@@ -107,7 +100,7 @@ def from_data(type_: Type[T_Dataclass], data: JSON) -> T_Dataclass:
 
     data_keys_without_fields = set(mapped_data) - set(dataclass_fields)
     if data_keys_without_fields:
-        unknown_data_keys_policy = _get_unknown_data_keys_policy(type_)
+        unknown_data_keys_policy = _get_unknown_data_keys_policy(type_)  # type: ignore[arg-type]
         if not unknown_data_keys_policy.allow:
             # TODO: not intuitive that these printed are after mapping. Either print before map or explain.
             raise InvalidDeserializationException(
