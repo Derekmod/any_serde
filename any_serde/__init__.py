@@ -7,7 +7,10 @@ from .common import (
     InvalidDeserializationException,
     InvalidSerializationException,
 )
-from .dataclass_serde import dataclass_from_environ
+from .dataclass_serde import (
+    dataclass_from_environ,
+    register_serialization_renames,
+)
 
 __all__ = [
     "from_data",
@@ -16,4 +19,5 @@ __all__ = [
     "InvalidDeserializationException",
     "InvalidSerializationException",
     "dataclass_from_environ",
+    "register_serialization_renames",
 ]
