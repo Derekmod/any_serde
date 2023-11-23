@@ -13,6 +13,8 @@ from any_serde.common import (
 
 
 ATTR_SERIALIZATION_RENAMES = "__serialization_renames__"
+ATTR_UNKNOWN_DATA_KEYS_POLICY = "__unknown_data_keys_policy__"
+ATTR_INJECTED_DATA = "__injected_data__"
 
 
 T_Dataclass = TypeVar("T_Dataclass", bound=object)
@@ -38,7 +40,7 @@ def _field_is_required(field: dataclasses.Field) -> bool:
 
 
 @functools.lru_cache(None)
-def _get_serialization_renames(dataclass_type: Type[object]) -> Dict[str, str]:
+def _get_serialization_renames(dataclass_type: Type[T_Dataclass]) -> Dict[str, str]:
     error_msg_start = f"Illegal {ATTR_SERIALIZATION_RENAMES} value for {dataclass_type}!"
 
     serialization_renames = getattr(dataclass_type, ATTR_SERIALIZATION_RENAMES, {})
@@ -65,11 +67,27 @@ def _get_serialization_renames(dataclass_type: Type[object]) -> Dict[str, str]:
     return serialization_renames
 
 
+@functools.lru_cache(None)
+def _get_unknown_data_keys_policy(dataclass_type: Type[T_Dataclass]) -> UnknownDataKeysPolicy:
+    if not hasattr(dataclass_type, ATTR_UNKNOWN_DATA_KEYS_POLICY):
+        return UnknownDataKeysPolicy(
+            allow=False,
+            roundtrip=False,
+        )
+
+    policy = getattr(dataclass_type, ATTR_UNKNOWN_DATA_KEYS_POLICY)
+
+    assert isinstance(policy, UnknownDataKeysPolicy), "Bad data keys policy"
+
+    return policy
+
+
 def from_data(type_: Type[T_Dataclass], data: JSON) -> T_Dataclass:
     if not isinstance(data, dict):
         raise InvalidDeserializationException(f"Dataclasses serialize to dict. Got {type(data)} instead!")
 
     assert is_dataclass_type(type_), "Can only call dataclass_serde.from_data on dataclass types!"
+    injected_data: Optional[Dict[str, JSON]] = None
 
     field_types = _get_type_hints(type_)  # type: ignore
     dataclass_fields = {x.name: x for x in dataclasses.fields(type_)}  # type: ignore
@@ -81,8 +99,18 @@ def from_data(type_: Type[T_Dataclass], data: JSON) -> T_Dataclass:
     deserialization_renames = {data_key: attribute_key for attribute_key, data_key in serialization_renames.items()}
     mapped_data = {deserialization_renames.get(data_key, data_key): data_value for data_key, data_value in data.items()}
 
-    data_without_fields = set(mapped_data) - set(dataclass_fields)
-    assert not data_without_fields, f"Data keys without fields: {data_without_fields}"
+    data_keys_without_fields = set(mapped_data) - set(dataclass_fields)
+    if data_keys_without_fields:
+        unknown_data_keys_policy = _get_unknown_data_keys_policy(type_)
+        if not unknown_data_keys_policy.allow:
+            # TODO: not intuitive that these printed are after mapping. Either print before map or explain.
+            raise ValueError(f"Parsing {type_}, got data keys without fields: {data_keys_without_fields}")
+
+        injected_data = {data_key: mapped_data[data_key] for data_key in data_keys_without_fields}
+
+        mapped_data = {
+            mapped_key: mapped_value for mapped_key, mapped_value in mapped_data if mapped_key in dataclass_fields
+        }
 
     required_field_names = [field_name for field_name, field in dataclass_fields.items() if _field_is_required(field)]
 
@@ -97,7 +125,12 @@ def from_data(type_: Type[T_Dataclass], data: JSON) -> T_Dataclass:
         for field_name, field_data in mapped_data.items()
     }
 
-    return type_(**casted_data)
+    obj = type_(**casted_data)
+
+    if injected_data is not None:
+        setattr(obj, ATTR_INJECTED_DATA, injected_data)
+
+    return obj
 
 
 def to_data(type_: Type[T_Dataclass], item: T_Dataclass) -> JSON:
@@ -115,18 +148,40 @@ def to_data(type_: Type[T_Dataclass], item: T_Dataclass) -> JSON:
 
     from any_serde import serde
 
-    return {
+    data = {
         serialization_renames.get(field_name, field_name): serde.to_data(
             field_types[field_name], getattr(item, field_name)
         )
         for field_name in dataclass_field_names
     }
 
+    if hasattr(item, ATTR_INJECTED_DATA):
+        injected_data = getattr(item, ATTR_INJECTED_DATA)
+        assert isinstance(injected_data, dict)
+        assert not set(injected_data) & set(data), "Trying to inject over existing keys"
+        data.update(injected_data)
+
+    return data
+
 
 def register_serialization_renames(serialization_renames: Dict[str, str], type_: T_Dataclass) -> None:
     """Allows the serialization for a dataclass to have different keys than the dataclass."""
     # TODO: validate serialization renames here as well
     setattr(type_, ATTR_SERIALIZATION_RENAMES, serialization_renames)
+
+
+@dataclasses.dataclass
+class UnknownDataKeysPolicy:
+    allow: bool
+    roundtrip: bool
+
+
+def allow_unknown_data_keys(type_: T_Dataclass, *, roundtrip: bool = False) -> None:
+    policy = UnknownDataKeysPolicy(
+        allow=True,
+        roundtrip=roundtrip,
+    )
+    setattr(type_, ATTR_UNKNOWN_DATA_KEYS_POLICY, policy)
 
 
 def dataclass_from_environ(
