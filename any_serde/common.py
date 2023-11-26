@@ -22,6 +22,24 @@ JSON = Union[
     List["JSON"],
 ]
 
+# class _JSONType(typing._UnionGenericAlias):
+# class _JSONType:
+#     def __repr__(self) -> str:
+#         if self is JSON:
+#             return "JSON"
+#         return JSON.__class__.__repr__(self)
+
+#     def __str__(self) -> str:
+#         return "JSON"
+
+
+# JSON.__class__.__repr__ = _JSONType.__repr__
+
+# _JSON_ARGS = list(JSON.__args__)
+# _JSON_ARGS[-1] = typing.List[JSON]
+# _JSON_ARGS[-2] = typing.Dict[str, JSON]
+# JSON.__args__ = tuple(_JSON_ARGS)
+
 
 T_Any = TypeVar("T_Any")
 
