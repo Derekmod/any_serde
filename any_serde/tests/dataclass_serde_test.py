@@ -70,7 +70,12 @@ def test_recursive_dataclass() -> None:
             ),
             RecursiveDataclass(
                 name="sister",
-                children=[],
+                children=[
+                    RecursiveDataclass(
+                        name="granddaughter",
+                        children=[],
+                    ),
+                ],
             ),
         ],
     )
@@ -83,7 +88,12 @@ def test_recursive_dataclass() -> None:
             },
             {
                 "name": "sister",
-                "children": [],
+                "children": [
+                    {
+                        "name": "granddaughter",
+                        "children": [],
+                    }
+                ],
             },
         ],
     }
