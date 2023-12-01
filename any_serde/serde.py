@@ -43,7 +43,7 @@ def from_data(
         return dataclass_serde.from_data(type_, data)
 
     if type_ is JSON:
-        return json_serde.from_data(data)
+        return json_serde.from_data(data)  # type: ignore[return-value]
 
     type_origin_nullable = get_origin(type_)
     if type_origin_nullable is None:
@@ -141,7 +141,7 @@ def to_data(type_: Type[T_Any], item: T_Any) -> JSON:
         return dataclass_serde.to_data(type_, item)
 
     if type_ is JSON:
-        return json_serde.to_data(item)
+        return json_serde.to_data(item)  # type: ignore[arg-type]
 
     type_origin_nullable = get_origin(type_)
     if type_origin_nullable is None:

@@ -1,9 +1,9 @@
 from typing import Any
-from any_serde.common import JSON, JSONPrimitive, InvalidDeserializationException, InvalidSerializationException
+from any_serde.common import JSON, InvalidDeserializationException, InvalidSerializationException
 
 
 def validate_json(data: Any) -> JSON:
-    if isinstance(data, JSONPrimitive):
+    if isinstance(data, (str, int, float, bool, type(None))):
         return data
 
     if isinstance(data, list):
