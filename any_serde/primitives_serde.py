@@ -4,6 +4,7 @@ from any_serde.common import (
     JSON_PRIMITIVE_TYPES,
     JSONPrimitive,
     InvalidDeserializationException,
+    InvalidSerializationException,
     JSON,
 )
 
@@ -32,5 +33,19 @@ def from_data(type_: Type[T_JSONPrimitive], data: JSON) -> T_JSONPrimitive:
     return data  # type: ignore
 
 
-def to_data(item: JSONPrimitive) -> JSON:
+def to_data(type_: Type[T_JSONPrimitive], item: T_JSONPrimitive) -> JSON:
+    assert is_primitive_type(type_), f"Can only call primitives_serde.to_data on primitive types! Got {type_}"
+
+    if type_ is None:
+        if item is not None:
+            raise InvalidSerializationException(
+                f"Failed serialization check with {item} (type={type(item)}) and declared type {type_}!"
+            )
+        return item
+
+    if type(item) is not type_:
+        raise InvalidSerializationException(
+            f"Failed serialization check with {item} (type={type(item)}) and declared type {type_}!"
+        )
+
     return item
