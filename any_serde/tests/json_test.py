@@ -7,7 +7,7 @@ from any_serde import dataclass_serde
 
 def test_int_serde() -> None:
     data: JSON = 2
-    obj = from_data(JSON, data)
+    obj: JSON = from_data(JSON, data)  # type: ignore[arg-type]
     assert obj == data
 
 
@@ -17,7 +17,7 @@ class JSONDataclass:
 
 
 def test_dataclass_json() -> None:
-    x = {
+    x: JSON = {
         "a": [1, "2", False],
         "b": None,
     }
@@ -29,7 +29,7 @@ def test_dataclass_json() -> None:
 
 
 def test_json_big() -> None:
-    data = [
+    data: JSON = [
         "abc",
         {
             "2": 123,
@@ -40,7 +40,7 @@ def test_json_big() -> None:
             },
         },
     ]
-    obj = from_data(JSON, data)
+    obj: JSON = from_data(JSON, data)  # type: ignore[arg-type]
     assert obj == data
-    roundtrip = to_data(JSON, obj)
+    roundtrip = to_data(JSON, obj)  # type: ignore[arg-type]
     assert roundtrip == data
