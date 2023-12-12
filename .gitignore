@@ -2,3 +2,5 @@ __pycache__
 /build
 /dist
 /any_serde.egg-info
+
+/t.*
