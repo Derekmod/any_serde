@@ -10,7 +10,7 @@ from any_serde.common import (
 
 def from_data(type_: Type[bytes], data: JSON) -> bytes:
     if not isinstance(data, str):
-        return InvalidDeserializationException(f"Cannot deserialize {type(data)} to bytes. Must be str!")
+        raise InvalidDeserializationException(f"Cannot deserialize {type(data)} to bytes. Must be str!")
 
     assert type_ is bytes
 

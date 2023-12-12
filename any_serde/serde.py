@@ -15,7 +15,7 @@ from any_serde.common import (
     JSON,
     resolve_newtypes,
 )
-from any_serde import enum_serde, json_serde, primitives_serde, dataclass_serde, union_serde
+from any_serde import bytes_serde, enum_serde, json_serde, primitives_serde, dataclass_serde, union_serde
 
 
 T_Any = TypeVar("T_Any")
@@ -44,6 +44,9 @@ def from_data(
 
     if type_ is JSON:
         return json_serde.from_data(data)  # type: ignore[return-value]
+
+    if type_ is bytes:
+        return bytes_serde.from_data(type_, data)  # type: ignore[return-value,arg-type]
 
     type_origin_nullable = get_origin(type_)
     if type_origin_nullable is None:
@@ -142,6 +145,10 @@ def to_data(type_: Type[T_Any], item: T_Any) -> JSON:
 
     if type_ is JSON:
         return json_serde.to_data(item)  # type: ignore[arg-type]
+
+    if type_ is bytes:
+        assert isinstance(item, bytes)
+        return bytes_serde.to_data(type_, item)  # type: ignore[arg-type]
 
     type_origin_nullable = get_origin(type_)
     if type_origin_nullable is None:

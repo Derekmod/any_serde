@@ -9,6 +9,5 @@ def test_bytes_rt() -> None:
 
     obj = bytes(byte_values)
     data = bytes_serde.to_data(bytes, obj)
-    print(data)
     obj_rt = bytes_serde.from_data(bytes, data)
     assert obj == obj_rt
