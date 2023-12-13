@@ -8,6 +8,7 @@ from typing import Any, Dict, Optional, Type, TypeVar, get_type_hints
 from any_serde.common import (
     JSON,
     InvalidDeserializationException,
+    UndefinedValueException,
 )
 
 
@@ -152,12 +153,13 @@ def to_data(type_: Type[T_Dataclass], item: T_Dataclass) -> JSON:
 
     from any_serde import serde
 
-    data = {
-        serialization_renames.get(field_name, field_name): serde.to_data(
-            field_types[field_name], getattr(item, field_name)
-        )
-        for field_name in dataclass_field_names
-    }
+    data: Dict[str, JSON] = {}
+    for field_name in dataclass_field_names:
+        key = serialization_renames.get(field_name, field_name)
+        try:
+            data[key] = serde.to_data(field_types[field_name], getattr(item, field_name))
+        except UndefinedValueException:
+            continue
 
     if hasattr(item, ATTR_INJECTED_DATA):
         injected_data = getattr(item, ATTR_INJECTED_DATA)

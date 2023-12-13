@@ -1,4 +1,4 @@
-from typing import Union, TypeVar, Type, Dict, List
+from typing import Any, Union, TypeVar, Type, Dict, List
 
 
 JSON_PRIMITIVE_TYPES = [
@@ -39,3 +39,14 @@ class InvalidDeserializationException(Exception):
 
 class InvalidSerializationException(Exception):
     """Indicates that the given variable could not be serialized."""
+
+
+class Undefined:
+    """A value that does not get serialized. Should only be used as dataclass values."""
+
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, Undefined)
+
+
+class UndefinedValueException(Exception):
+    """Indicates that an Undefined was (correctly) serialized."""

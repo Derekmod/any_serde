@@ -14,6 +14,8 @@ from any_serde.common import (
     InvalidDeserializationException,
     JSON,
     resolve_newtypes,
+    Undefined,
+    UndefinedValueException,
 )
 from any_serde import bytes_serde, enum_serde, json_serde, primitives_serde, dataclass_serde, union_serde
 
@@ -47,6 +49,9 @@ def from_data(
 
     if type_ is bytes:
         return bytes_serde.from_data(type_, data)  # type: ignore[return-value,arg-type]
+
+    if type_ is Undefined:
+        raise InvalidDeserializationException("No data can be deserialized to Undefined!")
 
     type_origin_nullable = get_origin(type_)
     if type_origin_nullable is None:
@@ -130,6 +135,11 @@ def to_data(type_: Type[T_Any], item: T_Any) -> JSON:
         item: The python variable to serialize
     """
     type_ = resolve_newtypes(type_)
+
+    if type_ is Undefined:
+        if not isinstance(item, Undefined):
+            raise InvalidSerializationException("Cannot serialize real value to Undefined")
+        raise UndefinedValueException()
 
     if primitives_serde.is_primitive_type(type_):
         # TODO check type matches item
