@@ -1,0 +1,10 @@
+export function bool__to_data(value: boolean): boolean {
+  return value;
+}
+
+export function bool__from_data(data: any): boolean {
+  if (typeof data !== "boolean") {
+      {{RAISE_DESERIALIZATION_ERROR}};
+  }
+  return data;
+}

@@ -1,0 +1,10 @@
+export function string__to_data(value: string): string {
+  return value;
+}
+
+export function string__from_data(data: any): string {
+  if (typeof data !== "string") {
+      {{RAISE_DESERIALIZATION_ERROR}};
+  }
+  return data;
+}
