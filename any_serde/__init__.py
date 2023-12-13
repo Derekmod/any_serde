@@ -6,6 +6,7 @@ from .common import (
     JSON,
     InvalidDeserializationException,
     InvalidSerializationException,
+    Undefined,
 )
 from .dataclass_serde import (
     dataclass_from_environ,
@@ -19,6 +20,7 @@ __all__ = [
     "JSON",
     "InvalidDeserializationException",
     "InvalidSerializationException",
+    "Undefined",
     "dataclass_from_environ",
     "register_serialization_renames",
     "allow_unknown_data_keys",

@@ -39,3 +39,11 @@ class InvalidDeserializationException(Exception):
 
 class InvalidSerializationException(Exception):
     """Indicates that the given variable could not be serialized."""
+
+
+class Undefined:
+    """A value that does not get serialized. Should only be used as dataclass values."""
+
+
+class UndefinedValueException(Exception):
+    """Indicates that an Undefined was (correctly) serialized."""
