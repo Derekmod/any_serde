@@ -8,6 +8,7 @@ from typing import (
     Union,
     get_args,
     get_origin,
+    overload,
 )
 from any_serde.common import (
     InvalidSerializationException,
@@ -21,6 +22,10 @@ from any_serde import bytes_serde, enum_serde, json_serde, primitives_serde, dat
 
 
 T_Any = TypeVar("T_Any")
+
+
+class _MissingType:
+    ...
 
 
 def from_data(
@@ -127,13 +132,39 @@ def from_data(
     raise NotImplementedError(f"Unsupported type_origin: {type_origin}")
 
 
-def to_data(type_: Type[T_Any], item: T_Any) -> JSON:
+@overload
+def to_data(item: Any, /) -> JSON:
+    """Converts a python variable to JSON data.
+
+    Args:
+        item: The python variable to serialize
+
+    Uses type(item) to determine how to serialize item.
+    Equivalent to `to_data(type(item), item)`
+    """
+
+
+@overload
+def to_data(type_: Type[T_Any], item: T_Any, /) -> JSON:
     """Converts a python variable to JSON data.
 
     Args:
         type_: The intended type of item
         item: The python variable to serialize
     """
+
+
+def to_data(
+    item_or_type: Union[Type[T_Any], Any],
+    item_or_missing: Union[T_Any, _MissingType] = _MissingType(),
+    /,
+) -> JSON:
+    if isinstance(item_or_missing, _MissingType):
+        type_: Type[T_Any] = item_or_type
+    else:
+        type_ = item_or_type
+        item: T_Any = item_or_missing
+
     type_ = resolve_newtypes(type_)
 
     if type_ is Undefined:
