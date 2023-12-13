@@ -50,6 +50,9 @@ def from_data(
     if type_ is bytes:
         return bytes_serde.from_data(type_, data)  # type: ignore[return-value,arg-type]
 
+    if type_ is Undefined:
+        raise InvalidDeserializationException("No data can be deserialized to Undefined!")
+
     type_origin_nullable = get_origin(type_)
     if type_origin_nullable is None:
         raise TypeError(f"Unsupported type: {type_}")
