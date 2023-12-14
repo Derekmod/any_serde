@@ -30,16 +30,10 @@ class InvalidTypescriptTypeException(Exception):
     """Failed to convert Python type to Typescript type."""
 
 
-# @dataclasses.dataclass
-# class TypescriptTypeInfo:
-#     name: str
-
-
 @dataclasses.dataclass
 class TypescriptTypedef:
     type_: Type[Any]
     filepath: list[str]
-    # type_info: TypescriptTypeInfo
     code: str
     dependencies: list[TypescriptTypedef]
 
