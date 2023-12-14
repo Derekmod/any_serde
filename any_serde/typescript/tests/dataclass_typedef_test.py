@@ -7,7 +7,7 @@ from any_serde.typescript.typescript_utils import TYPESCRIPT_MODULE_DIR
 
 
 @dataclass
-class TestDataclass:
+class SampleDataclass:
     x: float
     y_vec: List[float]
     description: str
@@ -18,9 +18,9 @@ class TestDataclass:
 def test_dataclass_typedef() -> None:
     typedef_store = TypescriptTypedefStore()
     typedef_store.get_typescript_typedef(
-        type_=TestDataclass,
-        name="TestDataclass",
-        filepath=["TestDataclass.ts"],
+        type_=SampleDataclass,
+        name="SampleDataclass",
+        filepath=["SampleDataclass.ts"],
     )
     code = typedef_store.get_single_file_code()
 

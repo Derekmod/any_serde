@@ -34,66 +34,66 @@ export function string__from_data(data: any): string {
   return data;
 }
 
-export type TestDataclass__y_vec = float[];
+export type SampleDataclass__y_vec = float[];
 
-export type TestDataclass__y_vec__DATA = float__DATA[];
+export type SampleDataclass__y_vec__DATA = float__DATA[];
 
-export function TestDataclass__y_vec__to_data(value: TestDataclass__y_vec): TestDataclass__y_vec__DATA {
+export function SampleDataclass__y_vec__to_data(value: SampleDataclass__y_vec): SampleDataclass__y_vec__DATA {
     return value.map(float__to_data);
 }
 
-export function TestDataclass__y_vec__from_data(data: any): TestDataclass__y_vec {
+export function SampleDataclass__y_vec__from_data(data: any): SampleDataclass__y_vec {
     if (!Array.isArray(data)) {
         const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
     }
     return data.map(float__from_data);
 }
 
-export type TestDataclass__pathlike__1 = string[];
+export type SampleDataclass__pathlike__1 = string[];
 
-export type TestDataclass__pathlike__1__DATA = string[];
+export type SampleDataclass__pathlike__1__DATA = string[];
 
-export function TestDataclass__pathlike__1__to_data(value: TestDataclass__pathlike__1): TestDataclass__pathlike__1__DATA {
+export function SampleDataclass__pathlike__1__to_data(value: SampleDataclass__pathlike__1): SampleDataclass__pathlike__1__DATA {
     return value.map(string__to_data);
 }
 
-export function TestDataclass__pathlike__1__from_data(data: any): TestDataclass__pathlike__1 {
+export function SampleDataclass__pathlike__1__from_data(data: any): SampleDataclass__pathlike__1 {
     if (!Array.isArray(data)) {
         const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
     }
     return data.map(string__from_data);
 }
 
-export type TestDataclass__pathlike = (
+export type SampleDataclass__pathlike = (
     | {
         type: 0;
         value: string;
     }
     | {
         type: 1;
-        value: TestDataclass__pathlike__1;
+        value: SampleDataclass__pathlike__1;
     }
 );
 
-export type TestDataclass__pathlike__DATA = (
+export type SampleDataclass__pathlike__DATA = (
     | string
-    | TestDataclass__pathlike__1__DATA
+    | SampleDataclass__pathlike__1__DATA
 );
 
-export function TestDataclass__pathlike__to_data(value: TestDataclass__pathlike): TestDataclass__pathlike__DATA {
+export function SampleDataclass__pathlike__to_data(value: SampleDataclass__pathlike): SampleDataclass__pathlike__DATA {
     switch (value.type) {
         case 0:
             return string__to_data(value.value);
         case 1:
-            return TestDataclass__pathlike__1__to_data(value.value);
+            return SampleDataclass__pathlike__1__to_data(value.value);
         default:
             const _: never = value;
             throw Error();
     }
 }
 
-export function TestDataclass__pathlike__from_data(data: any): TestDataclass__pathlike {
-    const results: TestDataclass__pathlike[] = [];
+export function SampleDataclass__pathlike__from_data(data: any): SampleDataclass__pathlike {
+    const results: SampleDataclass__pathlike[] = [];
     try {
         results.push({
             type: 0,
@@ -108,7 +108,7 @@ export function TestDataclass__pathlike__from_data(data: any): TestDataclass__pa
     try {
         results.push({
             type: 1,
-            value: TestDataclass__pathlike__1__from_data(data),
+            value: SampleDataclass__pathlike__1__from_data(data),
         });
     } catch (rawExc: any) {
         const exc = rawExc as unknown as Error;
@@ -124,33 +124,33 @@ export function TestDataclass__pathlike__from_data(data: any): TestDataclass__pa
     return results[0];
 }
 
-export type TestDataclass = {
+export type SampleDataclass = {
     x: float;
-    y_vec: TestDataclass__y_vec;
+    y_vec: SampleDataclass__y_vec;
     description: string;
     validated: boolean;
-    pathlike: TestDataclass__pathlike;
+    pathlike: SampleDataclass__pathlike;
 };
 
-export type TestDataclass__DATA = {
+export type SampleDataclass__DATA = {
     x: float__DATA;
-    y_vec: TestDataclass__y_vec__DATA;
+    y_vec: SampleDataclass__y_vec__DATA;
     description: string;
     validated: boolean;
-    pathlike: TestDataclass__pathlike__DATA;
+    pathlike: SampleDataclass__pathlike__DATA;
 };
 
-export function TestDataclass__to_data(value: TestDataclass): TestDataclass__DATA {
+export function SampleDataclass__to_data(value: SampleDataclass): SampleDataclass__DATA {
     return {
         x: float__to_data(value.x),
-        y_vec: TestDataclass__y_vec__to_data(value.y_vec),
+        y_vec: SampleDataclass__y_vec__to_data(value.y_vec),
         description: string__to_data(value.description),
         validated: bool__to_data(value.validated),
-        pathlike: TestDataclass__pathlike__to_data(value.pathlike),
+        pathlike: SampleDataclass__pathlike__to_data(value.pathlike),
     };
 }
 
-export function TestDataclass__from_data(data: any): TestDataclass {
+export function SampleDataclass__from_data(data: any): SampleDataclass {
     if (
         typeof data !== "object"
         || Array.isArray(data)
@@ -168,7 +168,7 @@ export function TestDataclass__from_data(data: any): TestDataclass {
     if (!dataObj.hasOwnProperty("y_vec")) {
         const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
     }
-    const fieldValue__y_vec = TestDataclass__y_vec__from_data(dataObj["y_vec"]);
+    const fieldValue__y_vec = SampleDataclass__y_vec__from_data(dataObj["y_vec"]);
 
     if (!dataObj.hasOwnProperty("description")) {
         const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
@@ -183,7 +183,7 @@ export function TestDataclass__from_data(data: any): TestDataclass {
     if (!dataObj.hasOwnProperty("pathlike")) {
         const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
     }
-    const fieldValue__pathlike = TestDataclass__pathlike__from_data(dataObj["pathlike"]);
+    const fieldValue__pathlike = SampleDataclass__pathlike__from_data(dataObj["pathlike"]);
 
     return {
         x: fieldValue__x,

@@ -295,7 +295,11 @@ class TypescriptTypedefStore:
 
     def get_single_file_code(self) -> str:
         code = ""
+        first = True
         for typedef in self.typedefs:
+            if not first:
+                code += "\n"
+            first = False
             code += typedef.code
             code += "\n"
 
