@@ -3,6 +3,7 @@ from typing import List, Union
 from any_serde.typescript.type_gen import (
     TypescriptTypedefStore,
 )
+from any_serde.typescript.typescript_utils import TYPESCRIPT_MODULE_DIR
 
 
 @dataclass
@@ -21,6 +22,9 @@ def test_dataclass_typedef() -> None:
         name="TestDataclass",
         filepath=["TestDataclass.ts"],
     )
-    for tdef in typedef_store.typedefs:
-        print(tdef.code)
-        print()
+    code = typedef_store.get_single_file_code()
+
+    with (TYPESCRIPT_MODULE_DIR / "tests" / "dataclass_typedef.ts").open("rt") as fin_code:
+        expected_code = fin_code.read()
+
+    assert code == expected_code

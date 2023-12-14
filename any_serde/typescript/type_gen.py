@@ -298,3 +298,5 @@ class TypescriptTypedefStore:
         for typedef in self.typedefs:
             code += typedef.code
             code += "\n"
+
+        return code
