@@ -6,6 +6,7 @@ export function {{to_data_name}}(value: {{value_type_name}}): {{data_type_name}}
     return value.map({{item_typedef.to_data_name}});
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function {{from_data_name}}(data: any): {{value_type_name}} {
     if (!Array.isArray(data)) {
         {{RAISE_DESERIALIZATION_ERROR}};
