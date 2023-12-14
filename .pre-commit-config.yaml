@@ -7,7 +7,7 @@ repos:
     hooks:
     -   id: debug-statements
     -   id: end-of-file-fixer
-        exclude: "^.*.txt|^build.*"  # May need to add to this list
+        exclude: "^.*.txt|^build.*|.jinja2$"  # May need to add to this list
     -   id: requirements-txt-fixer
     -   id: trailing-whitespace
         exclude: "^.*.txt|^build.*"

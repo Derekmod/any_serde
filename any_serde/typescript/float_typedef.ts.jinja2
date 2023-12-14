@@ -1,0 +1,13 @@
+export type float = number;
+export type float__DATA = number;
+
+export function float__to_data(value: number): number {
+  return value;
+}
+
+export function float__from_data(data: any): number {
+  if (typeof data !== "number") {
+      {{RAISE_DESERIALIZATION_ERROR}};
+  }
+  return data;
+}
