@@ -22,7 +22,8 @@ from any_serde.typescript.typescript_utils import (
     load_template,
 )
 
-RAISE_DESERIALIZATION_ERROR = 'throw Error("any_serde.DeserializationError")'
+DESERIALIZATION_ERROR_NAME = "any_serde.DeserializationError"
+RAISE_DESERIALIZATION_ERROR = f'const e = Error(); e.name = "{DESERIALIZATION_ERROR_NAME}"; throw e'
 
 
 class InvalidTypescriptTypeException(Exception):
@@ -179,7 +180,42 @@ class TypescriptTypedefStore:
         type_args = [resolve_newtypes(type_arg) for type_arg in get_args(type_)]
 
         if type_origin in (Union, types.UnionType):
-            raise NotImplementedError("TODO: handle unions")
+            value_type_name = name
+            data_type_name = f"{name}__DATA"
+            to_data_name = f"{name}__to_data"
+            from_data_name = f"{name}__from_data"
+
+            union_typedefs = [
+                self._find_or_create_by_type(
+                    type_=union_arg_type,
+                    name=f"{name}__{union_arg_idx}",
+                    filepath=filepath,
+                )
+                for union_arg_idx, union_arg_type in enumerate(type_args)
+            ]
+            union_code_template = load_template(TYPESCRIPT_MODULE_DIR / "union_typedef.ts.jinja2")
+            union_code = union_code_template.render(
+                value_type_name=value_type_name,
+                data_type_name=data_type_name,
+                to_data_name=to_data_name,
+                from_data_name=from_data_name,
+                union_typedefs=union_typedefs,
+                DESERIALIZATION_ERROR_NAME=DESERIALIZATION_ERROR_NAME,
+                RAISE_DESERIALIZATION_ERROR=RAISE_DESERIALIZATION_ERROR,
+                enumerate=enumerate,
+            )
+            return TypescriptTypedef(
+                type_=type_,
+                filepath=filepath,
+                code=union_code,
+                dependencies=[union_typedefs],
+                value_type_name=value_type_name,
+                value_type_requires_import=True,
+                data_type_name=data_type_name,
+                data_type_requires_import=True,
+                to_data_name=to_data_name,
+                from_data_name=from_data_name,
+            )
 
         if type_origin in (list, set):
             value_type_name = name
@@ -219,10 +255,10 @@ class TypescriptTypedefStore:
             raise NotImplementedError("TODO: handle dicts")
 
         if type_origin is tuple:
-            raise NotImplementedError("TODO: handle dicts")
+            raise NotImplementedError("TODO: handle tuples")
 
         if type_origin is Literal:
-            raise NotImplementedError("TODO: handle dicts")
+            raise NotImplementedError("TODO: handle literals")
 
         raise NotImplementedError(f"Unrecognized type: {type_}")
 
