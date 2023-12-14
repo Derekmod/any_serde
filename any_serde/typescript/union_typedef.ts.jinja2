@@ -25,6 +25,7 @@ export function {{to_data_name}}(value: {{value_type_name}}): {{data_type_name}}
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function {{from_data_name}}(data: any): {{value_type_name}} {
     const results: {{value_type_name}}[] = [];
 
@@ -34,6 +35,7 @@ export function {{from_data_name}}(data: any): {{value_type_name}} {
             type: {{union_type_idx}},
             value: {{union_typedef.from_data_name}}(data),
         });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (rawExc: any) {
         const exc = rawExc as unknown as Error;
         if (exc.name !== "{{DESERIALIZATION_ERROR_NAME}}") {
