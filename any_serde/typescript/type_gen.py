@@ -292,3 +292,9 @@ class TypescriptTypedefStore:
         )
         self.typedefs.append(typedef)
         return typedef
+
+    def get_single_file_code(self) -> str:
+        code = ""
+        for typedef in self.typedefs:
+            code += typedef.code
+            code += "\n"
