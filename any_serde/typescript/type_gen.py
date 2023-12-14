@@ -1,14 +1,3 @@
-"""
-Typescript code:
-1. Type definition
-2. from_data
-3. to_data
-
-I guess these can be in the same file?
-
-Need to import from other files?
-"""
-
 from __future__ import annotations
 
 import types
