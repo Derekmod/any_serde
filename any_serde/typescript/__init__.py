@@ -1,1 +1,3 @@
-from any_serde.typescript.type_gen import TypescriptTypedefStore as TypescriptTypedefStore
+from any_serde.typescript.type_gen import (
+    TypescriptTypedefStore as TypescriptTypedefStore,
+)
