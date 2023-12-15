@@ -26,9 +26,6 @@ def test_dataclass_typedef() -> None:
     )
     code = typedef_store.get_single_file_code()
 
-    with (TYPESCRIPT_MODULE_DIR / "tests" / "dataclass_typedef.ts").open("wt") as fout_code:
-        fout_code.write(code)
-
     with (TYPESCRIPT_MODULE_DIR / "tests" / "dataclass_typedef.ts").open("rt") as fin_code:
         expected_code = fin_code.read()
 
