@@ -13,6 +13,8 @@ from any_serde.typescript.typescript_utils import (
 
 DESERIALIZATION_ERROR_NAME = "any_serde.DeserializationError"
 RAISE_DESERIALIZATION_ERROR = f'const e = Error(); e.name = "{DESERIALIZATION_ERROR_NAME}"; throw e'
+SERIALIZATION_ERROR_NAME = "any_serde.SerializationError"
+RAISE_SERIALIZATION_ERROR = f'const e = Error(); e.name = "{SERIALIZATION_ERROR_NAME}"; throw e'
 
 
 class InvalidTypescriptTypeException(Exception):
@@ -36,6 +38,43 @@ class TypescriptTypedef:
     from_data_name: str
 
 
+string_typescript_template = load_template(TYPESCRIPT_MODULE_DIR / "string_typedef.ts.jinja2")
+string_typescript_code = string_typescript_template.render(
+    RAISE_DESERIALIZATION_ERROR=RAISE_DESERIALIZATION_ERROR,
+)
+STRING_TYPESCRIPT_TYPEDEF = TypescriptTypedef(
+    type_=str,
+    filepath=["builtin_typedefs.ts"],
+    code=string_typescript_code,
+    dependencies=[],
+    value_type_name="string",
+    value_type_requires_import=False,
+    data_type_name="string",
+    data_type_requires_import=False,
+    to_data_name="string__to_data",
+    from_data_name="string__from_data",
+)
+
+
+int_typescript_template = load_template(TYPESCRIPT_MODULE_DIR / "int_typedef.ts.jinja2")
+int_typescript_code = int_typescript_template.render(
+    RAISE_DESERIALIZATION_ERROR=RAISE_DESERIALIZATION_ERROR,
+    RAISE_SERIALIZATION_ERROR=RAISE_SERIALIZATION_ERROR,
+)
+INT_TYPESCRIPT_TYPEDEF = TypescriptTypedef(
+    type_=int,
+    filepath=["builtin_typedefs.ts"],
+    code=int_typescript_code,
+    dependencies=[],
+    value_type_name="int",
+    value_type_requires_import=True,
+    data_type_name="int__DATA",
+    data_type_requires_import=True,
+    to_data_name="int__to_data",
+    from_data_name="int__from_data",
+)
+
+
 float_typescript_template = load_template(TYPESCRIPT_MODULE_DIR / "float_typedef.ts.jinja2")
 float_typescript_code = float_typescript_template.render(
     RAISE_DESERIALIZATION_ERROR=RAISE_DESERIALIZATION_ERROR,
@@ -45,10 +84,10 @@ FLOAT_TYPESCRIPT_TYPEDEF = TypescriptTypedef(
     filepath=["builtin_typedefs.ts"],
     code=float_typescript_code,
     dependencies=[],
-    value_type_name="float",
-    value_type_requires_import=True,
-    data_type_name="float__DATA",
-    data_type_requires_import=True,
+    value_type_name="number",
+    value_type_requires_import=False,
+    data_type_name="number",
+    data_type_requires_import=False,
     to_data_name="float__to_data",
     from_data_name="float__from_data",
 )
@@ -71,31 +110,50 @@ BOOL_TYPESCRIPT_TYPEDEF = TypescriptTypedef(
     from_data_name="bool__from_data",
 )
 
-
-string_typescript_template = load_template(TYPESCRIPT_MODULE_DIR / "string_typedef.ts.jinja2")
-string_typescript_code = string_typescript_template.render(
+none_typescript_template = load_template(TYPESCRIPT_MODULE_DIR / "none_typedef.ts.jinja2")
+none_typescript_code = none_typescript_template.render(
     RAISE_DESERIALIZATION_ERROR=RAISE_DESERIALIZATION_ERROR,
 )
-STRING_TYPESCRIPT_TYPEDEF = TypescriptTypedef(
-    type_=str,
+NONE_TYPESCRIPT_TYPEDEF = TypescriptTypedef(
+    type_=None,
     filepath=["builtin_typedefs.ts"],
-    code=string_typescript_code,
+    code=none_typescript_code,
     dependencies=[],
-    value_type_name="string",
+    value_type_name="null",
     value_type_requires_import=False,
-    data_type_name="string",
+    data_type_name="null",
     data_type_requires_import=False,
-    to_data_name="string__to_data",
-    from_data_name="string__from_data",
+    to_data_name="none__to_data",
+    from_data_name="none__from_data",
+)
+
+nonetype_typescript_template = load_template(TYPESCRIPT_MODULE_DIR / "nonetype_typedef.ts.jinja2")
+nonetype_typescript_code = nonetype_typescript_template.render(
+    RAISE_DESERIALIZATION_ERROR=RAISE_DESERIALIZATION_ERROR,
+)
+NONETYPE_TYPESCRIPT_TYPEDEF = TypescriptTypedef(
+    type_=type(None),
+    filepath=["builtin_typedefs.ts"],
+    code=nonetype_typescript_code,
+    dependencies=[],
+    value_type_name="null",
+    value_type_requires_import=False,
+    data_type_name="null",
+    data_type_requires_import=False,
+    to_data_name="nonetype__to_data",
+    from_data_name="nonetype__from_data",
 )
 
 
 class TypescriptTypedefStore:
     def __init__(self) -> None:
         self.typedefs: list[TypescriptTypedef] = [
+            STRING_TYPESCRIPT_TYPEDEF,
+            INT_TYPESCRIPT_TYPEDEF,
             FLOAT_TYPESCRIPT_TYPEDEF,
             BOOL_TYPESCRIPT_TYPEDEF,
-            STRING_TYPESCRIPT_TYPEDEF,
+            NONE_TYPESCRIPT_TYPEDEF,
+            NONETYPE_TYPESCRIPT_TYPEDEF,
         ]
 
     def _find_by_type(self, type_: Type[Any]) -> Optional[TypescriptTypedef]:
