@@ -1,3 +1,6 @@
+export type int = number;
+export type int__DATA = number;
+
 export function int__to_data(value: number): number {
   if (!Number.isInteger(value)) {
     {{RAISE_SERIALIZATION_ERROR}};
@@ -10,7 +13,7 @@ export function int__from_data(data: any): number {
   if (typeof data !== "number") {
       {{RAISE_DESERIALIZATION_ERROR}};
   }
-  if (!Number.isInteger(value)) {
+  if (!Number.isInteger(data)) {
     {{RAISE_DESERIALIZATION_ERROR}};
   }
   return data;

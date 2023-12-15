@@ -115,7 +115,7 @@ none_typescript_code = none_typescript_template.render(
     RAISE_DESERIALIZATION_ERROR=RAISE_DESERIALIZATION_ERROR,
 )
 NONE_TYPESCRIPT_TYPEDEF = TypescriptTypedef(
-    type_=None,
+    type_=None,  # type: ignore[arg-type]
     filepath=["builtin_typedefs.ts"],
     code=none_typescript_code,
     dependencies=[],
@@ -249,7 +249,7 @@ class TypescriptTypedefStore:
                 type_=type_,
                 filepath=filepath,
                 code=union_code,
-                dependencies=[union_typedefs],
+                dependencies=union_typedefs,
                 value_type_name=value_type_name,
                 value_type_requires_import=True,
                 data_type_name=data_type_name,
