@@ -1,10 +1,41 @@
-export type float = number;
-export type float__DATA = number;
+export function string__to_data(value: string): string {
+  return value;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function string__from_data(data: any): string {
+  if (typeof data !== "string") {
+      const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
+  }
+  return data;
+}
+
+export type int = number;
+export type int__DATA = number;
+
+export function int__to_data(value: number): number {
+  if (!Number.isInteger(value)) {
+    const e = Error(); e.name = "any_serde.SerializationError"; throw e;
+  }
+  return value;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function int__from_data(data: any): number {
+  if (typeof data !== "number") {
+      const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
+  }
+  if (!Number.isInteger(data)) {
+    const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
+  }
+  return data;
+}
 
 export function float__to_data(value: number): number {
   return value;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function float__from_data(data: any): number {
   if (typeof data !== "number") {
       const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
@@ -16,6 +47,7 @@ export function bool__to_data(value: boolean): boolean {
   return value;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function bool__from_data(data: any): boolean {
   if (typeof data !== "boolean") {
       const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
@@ -23,25 +55,39 @@ export function bool__from_data(data: any): boolean {
   return data;
 }
 
-export function string__to_data(value: string): string {
+export function none__to_data(value: null): null {
   return value;
 }
 
-export function string__from_data(data: any): string {
-  if (typeof data !== "string") {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function none__from_data(data: any): null {
+  if (data !== null) {
       const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
   }
   return data;
 }
 
-export type SampleDataclass__y_vec = float[];
+export function nonetype__to_data(value: null): null {
+  return value;
+}
 
-export type SampleDataclass__y_vec__DATA = float__DATA[];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function nonetype__from_data(data: any): null {
+  if (data !== null) {
+      const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
+  }
+  return data;
+}
+
+export type SampleDataclass__y_vec = number[];
+
+export type SampleDataclass__y_vec__DATA = number[];
 
 export function SampleDataclass__y_vec__to_data(value: SampleDataclass__y_vec): SampleDataclass__y_vec__DATA {
     return value.map(float__to_data);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function SampleDataclass__y_vec__from_data(data: any): SampleDataclass__y_vec {
     if (!Array.isArray(data)) {
         const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
@@ -57,6 +103,7 @@ export function SampleDataclass__pathlike__1__to_data(value: SampleDataclass__pa
     return value.map(string__to_data);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function SampleDataclass__pathlike__1__from_data(data: any): SampleDataclass__pathlike__1 {
     if (!Array.isArray(data)) {
         const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
@@ -92,6 +139,7 @@ export function SampleDataclass__pathlike__to_data(value: SampleDataclass__pathl
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function SampleDataclass__pathlike__from_data(data: any): SampleDataclass__pathlike {
     const results: SampleDataclass__pathlike[] = [];
     try {
@@ -99,6 +147,7 @@ export function SampleDataclass__pathlike__from_data(data: any): SampleDataclass
             type: 0,
             value: string__from_data(data),
         });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (rawExc: any) {
         const exc = rawExc as unknown as Error;
         if (exc.name !== "any_serde.DeserializationError") {
@@ -110,6 +159,70 @@ export function SampleDataclass__pathlike__from_data(data: any): SampleDataclass
             type: 1,
             value: SampleDataclass__pathlike__1__from_data(data),
         });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (rawExc: any) {
+        const exc = rawExc as unknown as Error;
+        if (exc.name !== "any_serde.DeserializationError") {
+            throw exc;
+        }
+    }
+
+    if (results.length !== 1) {
+        const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
+    }
+
+    return results[0];
+}
+
+export type SampleDataclass__opt = (
+    | {
+        type: 0;
+        value: int;
+    }
+    | {
+        type: 1;
+        value: null;
+    }
+);
+
+export type SampleDataclass__opt__DATA = (
+    | int__DATA
+    | null
+);
+
+export function SampleDataclass__opt__to_data(value: SampleDataclass__opt): SampleDataclass__opt__DATA {
+    switch (value.type) {
+        case 0:
+            return int__to_data(value.value);
+        case 1:
+            return nonetype__to_data(value.value);
+        default:
+            const _: never = value;
+            throw Error();
+    }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function SampleDataclass__opt__from_data(data: any): SampleDataclass__opt {
+    const results: SampleDataclass__opt[] = [];
+    try {
+        results.push({
+            type: 0,
+            value: int__from_data(data),
+        });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (rawExc: any) {
+        const exc = rawExc as unknown as Error;
+        if (exc.name !== "any_serde.DeserializationError") {
+            throw exc;
+        }
+    }
+    try {
+        results.push({
+            type: 1,
+            value: nonetype__from_data(data),
+        });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (rawExc: any) {
         const exc = rawExc as unknown as Error;
         if (exc.name !== "any_serde.DeserializationError") {
@@ -125,19 +238,23 @@ export function SampleDataclass__pathlike__from_data(data: any): SampleDataclass
 }
 
 export type SampleDataclass = {
-    x: float;
+    x: number;
     y_vec: SampleDataclass__y_vec;
     description: string;
     validated: boolean;
     pathlike: SampleDataclass__pathlike;
+    idx: int;
+    opt: SampleDataclass__opt;
 };
 
 export type SampleDataclass__DATA = {
-    x: float__DATA;
+    x: number;
     y_vec: SampleDataclass__y_vec__DATA;
     description: string;
     validated: boolean;
     pathlike: SampleDataclass__pathlike__DATA;
+    idx: int__DATA;
+    opt: SampleDataclass__opt__DATA;
 };
 
 export function SampleDataclass__to_data(value: SampleDataclass): SampleDataclass__DATA {
@@ -147,9 +264,12 @@ export function SampleDataclass__to_data(value: SampleDataclass): SampleDataclas
         description: string__to_data(value.description),
         validated: bool__to_data(value.validated),
         pathlike: SampleDataclass__pathlike__to_data(value.pathlike),
+        idx: int__to_data(value.idx),
+        opt: SampleDataclass__opt__to_data(value.opt),
     };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function SampleDataclass__from_data(data: any): SampleDataclass {
     if (
         typeof data !== "object"
@@ -160,30 +280,54 @@ export function SampleDataclass__from_data(data: any): SampleDataclass {
     }
     const dataObj: object = data;
 
-    if (!dataObj.hasOwnProperty("x")) {
+    if (!Object.hasOwn(dataObj, "x")) {
         const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
     }
-    const fieldValue__x = float__from_data(dataObj["x"]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fieldData__x = (dataObj as {x: any})["x"];
+    const fieldValue__x = float__from_data(fieldData__x);
 
-    if (!dataObj.hasOwnProperty("y_vec")) {
+    if (!Object.hasOwn(dataObj, "y_vec")) {
         const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
     }
-    const fieldValue__y_vec = SampleDataclass__y_vec__from_data(dataObj["y_vec"]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fieldData__y_vec = (dataObj as {y_vec: any})["y_vec"];
+    const fieldValue__y_vec = SampleDataclass__y_vec__from_data(fieldData__y_vec);
 
-    if (!dataObj.hasOwnProperty("description")) {
+    if (!Object.hasOwn(dataObj, "description")) {
         const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
     }
-    const fieldValue__description = string__from_data(dataObj["description"]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fieldData__description = (dataObj as {description: any})["description"];
+    const fieldValue__description = string__from_data(fieldData__description);
 
-    if (!dataObj.hasOwnProperty("validated")) {
+    if (!Object.hasOwn(dataObj, "validated")) {
         const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
     }
-    const fieldValue__validated = bool__from_data(dataObj["validated"]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fieldData__validated = (dataObj as {validated: any})["validated"];
+    const fieldValue__validated = bool__from_data(fieldData__validated);
 
-    if (!dataObj.hasOwnProperty("pathlike")) {
+    if (!Object.hasOwn(dataObj, "pathlike")) {
         const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
     }
-    const fieldValue__pathlike = SampleDataclass__pathlike__from_data(dataObj["pathlike"]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fieldData__pathlike = (dataObj as {pathlike: any})["pathlike"];
+    const fieldValue__pathlike = SampleDataclass__pathlike__from_data(fieldData__pathlike);
+
+    if (!Object.hasOwn(dataObj, "idx")) {
+        const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fieldData__idx = (dataObj as {idx: any})["idx"];
+    const fieldValue__idx = int__from_data(fieldData__idx);
+
+    if (!Object.hasOwn(dataObj, "opt")) {
+        const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fieldData__opt = (dataObj as {opt: any})["opt"];
+    const fieldValue__opt = SampleDataclass__opt__from_data(fieldData__opt);
 
     return {
         x: fieldValue__x,
@@ -191,5 +335,7 @@ export function SampleDataclass__from_data(data: any): SampleDataclass {
         description: fieldValue__description,
         validated: fieldValue__validated,
         pathlike: fieldValue__pathlike,
+        idx: fieldValue__idx,
+        opt: fieldValue__opt,
     };
 }

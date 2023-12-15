@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Union
+from typing import List, Optional, Union
 from any_serde.typescript.type_gen import (
     TypescriptTypedefStore,
 )
@@ -13,6 +13,8 @@ class SampleDataclass:
     description: str
     validated: bool
     pathlike: Union[str, List[str]]
+    idx: int
+    opt: Optional[int]
 
 
 def test_dataclass_typedef() -> None:
