@@ -49,13 +49,13 @@ def _get_union_args(type_: Type[T_Any]) -> Sequence[Type[Any]]:
     assert type_origin_nullable is not None, f"Calling union serde on non-union type: {type_}"
 
     type_origin = resolve_newtypes(type_origin_nullable)
-    type_args = [resolve_newtypes(type_arg) for type_arg in get_args(type_)]
+    union_args = [resolve_newtypes(type_arg) for type_arg in get_args(type_)]
 
     assert type_origin in (Union, types.UnionType), f"Calling union serde on non-union type: {type_}"
 
-    deduped_type_args = list(set(type_args))
+    deduped_union_args = list(set(union_args))
 
-    return deduped_type_args
+    return deduped_union_args
 
 
 def from_data(
@@ -66,12 +66,24 @@ def from_data(
     if serde_config is None:
         serde_config = SerdeConfig()
 
-    type_args = _get_union_args(type_)
+    union_args = _get_union_args(type_)
 
     from any_serde import serde
 
-    # TODO: handle explicit mode
-    for union_arg in type_args:
+    if serde_config.read_explicit_unions:
+        if not isinstance(data, dict):
+            raise InvalidDeserializationException(f"Expected explicit union type, got {type(data)}")
+        if len(data) != 1:
+            raise InvalidDeserializationException("Malformed explicit union data - multiple keys!")
+        ((union_arg_idx_str, union_data),) = data.items()
+        try:
+            union_arg_idx = int(union_arg_idx_str)
+        except ValueError:
+            raise InvalidDeserializationException(f"Malformed explicit union data - key: {union_arg_idx}")
+        union_arg = union_args[union_arg_idx]
+        return serde.from_data(union_arg, union_data)
+
+    for union_arg in union_args:
         try:
             return serde.from_data(union_arg, data)
         except InvalidDeserializationException:
@@ -88,12 +100,20 @@ def to_data(
     if serde_config is None:
         serde_config = SerdeConfig()
 
-    type_args = _get_union_args(type_)
+    union_args = _get_union_args(type_)
 
     from any_serde import serde
 
-    # TODO: handle explicit mode
-    for union_arg in type_args:
+    if serde_config.write_explicit_unions:
+        for union_arg_idx, union_arg in enumerate(union_args):
+            try:
+                return {str(union_arg_idx): serde.to_data(union_arg, item)}
+            except InvalidSerializationException:
+                pass
+
+        raise InvalidSerializationException("Could not serialize from any union option.")
+
+    for union_arg in union_args:
         try:
             return serde.to_data(union_arg, item)
         except InvalidSerializationException:
