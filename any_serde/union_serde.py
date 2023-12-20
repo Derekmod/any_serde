@@ -10,8 +10,30 @@ from typing import (
 )
 from any_serde.common import InvalidSerializationException, InvalidDeserializationException, JSON, resolve_newtypes
 
+# ExplicitUnion = NewType("ExplicitUnion", Union)
+"""Serializes which union option is used, not just the value."""
+
 
 T_Any = TypeVar("T_Any")
+
+
+# # class ExplicitUnion(Generic[T_Any]):
+# #     # def __init__(self, union_type: Type[Any]) -> None:
+# #     #     self.union_type = union_type
+# #     pass
+
+
+# ExplicitUnion = Union[T_Any, T_Any]
+# Boolable = Union[bool, T_Any]
+
+
+# def get_explicit_union(union_type: T_Any) -> T_Any:
+#     return Union[*union_type]
+#     # # TODO: assert is a union
+#     # explicit_type = copy.copy(union_type)
+#     # setattr
+#     # setattr(explicit_type, "__any_serde_explicit_union__", True)
+#     # return explicit_type
 
 
 def _get_union_args(type_: Type[T_Any]) -> Sequence[Type[Any]]:
