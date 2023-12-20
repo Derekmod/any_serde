@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Any, Union, TypeVar, Type, Dict, List
 
 
@@ -50,3 +51,9 @@ class Undefined:
 
 class UndefinedValueException(Exception):
     """Indicates that an Undefined was (correctly) serialized."""
+
+
+@dataclass
+class SerdeConfig:
+    read_explicit_unions: bool = True
+    write_explicit_unions: bool = True

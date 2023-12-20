@@ -1,6 +1,7 @@
 import types
 from typing import (
     Any,
+    Optional,
     Sequence,
     Type,
     TypeVar,
@@ -8,7 +9,13 @@ from typing import (
     get_args,
     get_origin,
 )
-from any_serde.common import InvalidSerializationException, InvalidDeserializationException, JSON, resolve_newtypes
+from any_serde.common import (
+    InvalidSerializationException,
+    InvalidDeserializationException,
+    JSON,
+    SerdeConfig,
+    resolve_newtypes,
+)
 
 # ExplicitUnion = NewType("ExplicitUnion", Union)
 """Serializes which union option is used, not just the value."""
@@ -54,11 +61,16 @@ def _get_union_args(type_: Type[T_Any]) -> Sequence[Type[Any]]:
 def from_data(
     type_: Type[T_Any],
     data: JSON,
+    serde_config: Optional[SerdeConfig],
 ) -> T_Any:
+    if serde_config is None:
+        serde_config = SerdeConfig()
+
     type_args = _get_union_args(type_)
 
     from any_serde import serde
 
+    # TODO: handle explicit mode
     for union_arg in type_args:
         try:
             return serde.from_data(union_arg, data)
@@ -71,11 +83,16 @@ def from_data(
 def to_data(
     type_: Type[T_Any],
     item: T_Any,
+    serde_config: Optional[SerdeConfig],
 ) -> JSON:
+    if serde_config is None:
+        serde_config = SerdeConfig()
+
     type_args = _get_union_args(type_)
 
     from any_serde import serde
 
+    # TODO: handle explicit mode
     for union_arg in type_args:
         try:
             return serde.to_data(union_arg, item)
