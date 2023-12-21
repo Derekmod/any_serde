@@ -19,9 +19,10 @@ export function {{to_data_name}}(value: {{value_type_name}}): {{data_type_name}}
         case {{union_type_idx}}:
             return {{union_typedef.to_data_name}}(value.value);
         {%- endfor %}
-        default:
+        default: {
             const _: never = value;
             throw Error();
+        }
     }
 }
 
