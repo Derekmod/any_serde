@@ -7,6 +7,7 @@ from .common import (
     InvalidDeserializationException,
     InvalidSerializationException,
     Undefined,
+    SerdeConfig,
 )
 from .dataclass_serde import (
     dataclass_from_environ,
@@ -20,6 +21,7 @@ __all__ = [
     "JSON",
     "InvalidDeserializationException",
     "InvalidSerializationException",
+    "SerdeConfig",
     "Undefined",
     "dataclass_from_environ",
     "register_serialization_renames",
