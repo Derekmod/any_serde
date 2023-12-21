@@ -3,6 +3,7 @@ from typing import (
     Any,
     Dict,
     Literal,
+    Optional,
     Type,
     TypeVar,
     Union,
@@ -13,6 +14,7 @@ from any_serde.common import (
     InvalidSerializationException,
     InvalidDeserializationException,
     JSON,
+    SerdeConfig,
     resolve_newtypes,
     Undefined,
     UndefinedValueException,
@@ -26,6 +28,7 @@ T_Any = TypeVar("T_Any")
 def from_data(
     type_: Type[T_Any],
     data: JSON,
+    serde_config: Optional[SerdeConfig] = None,
 ) -> T_Any:
     """Constructs a python variable of the given type from JSON data.
 
@@ -61,7 +64,7 @@ def from_data(
     type_args = [resolve_newtypes(type_arg) for type_arg in get_args(type_)]
 
     if type_origin in (Union, types.UnionType):
-        return union_serde.from_data(type_, data)
+        return union_serde.from_data(type_, data, serde_config)
 
     if type_origin in (list, set):
         if not isinstance(data, list):
@@ -127,7 +130,11 @@ def from_data(
     raise NotImplementedError(f"Unsupported type_origin: {type_origin}")
 
 
-def to_data(type_: Type[T_Any], item: T_Any) -> JSON:
+def to_data(
+    type_: Type[T_Any],
+    item: T_Any,
+    serde_config: Optional[SerdeConfig] = None,
+) -> JSON:
     """Converts a python variable to JSON data.
 
     Args:
@@ -168,7 +175,7 @@ def to_data(type_: Type[T_Any], item: T_Any) -> JSON:
     type_args = [resolve_newtypes(type_arg) for type_arg in get_args(type_)]
 
     if type_origin in (Union, types.UnionType):
-        return union_serde.to_data(type_, item)
+        return union_serde.to_data(type_, item, serde_config)
 
     if type_origin in (list, set):
         if not isinstance(item, type_origin):

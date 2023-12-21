@@ -1,0 +1,62 @@
+from typing import (
+    Any,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+    overload,
+)
+
+
+class _MissingType:
+    ...
+
+
+_MISSING = _MissingType()
+
+
+T_Any = TypeVar("T_Any")
+{%- for i in range(MAX_UNION_ARGS) %}
+T_Any{{i+1}} = TypeVar("T_Any{{i+1}}")
+{%- endfor %}
+
+
+class _ExplicitUnionType:
+    def __init__(self, *union_types: T_Any) -> None:
+        pass
+
+
+{%- for num_args in range(2, MAX_UNION_ARGS + 1) %}
+@overload
+def ExplicitUnion(
+    {%- for i in range(num_args) %}
+    union_type{{i+1}}: Type[T_Any{{i+1}}],
+    {%- endfor %}
+) -> Type[
+    Union[
+        {%- for i in range(num_args) %}
+        T_Any{{i+1}},
+        {%- endfor %}
+    ]
+]:
+    ...
+
+{% endfor %}
+
+
+def ExplicitUnion(
+    union_type1: Type[T_Any1],
+    union_type2: Type[T_Any2],
+    {%- for i in range(2, MAX_UNION_ARGS) %}
+    union_type{{i+1}}: Union[Type[T_Any{{i+1}}], _MissingType] = _MISSING,
+    {%- endfor %}
+) -> Type[Any]:
+    {%- for num_args in range(MAX_UNION_ARGS, 1, -1) %}
+    if not isinstance(union_type{{num_args}}, _MissingType):
+        return _ExplicitUnionType(  # type: ignore[return-value]
+            {%- for i in range(num_args) %}
+            union_type{{i+1}},
+            {%- endfor %}
+        )
+    {%- endfor %}
+
