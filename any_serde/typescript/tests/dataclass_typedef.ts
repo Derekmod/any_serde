@@ -196,9 +196,10 @@ export function SampleDataclass__opt__to_data(value: SampleDataclass__opt): Samp
             return int__to_data(value.value);
         case 1:
             return nonetype__to_data(value.value);
-        default:
+        default: {
             const _: never = value;
             throw Error();
+        }
     }
 }
 
