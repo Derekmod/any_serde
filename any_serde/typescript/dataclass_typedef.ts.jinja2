@@ -12,9 +12,9 @@ export type {{data_type_name}} = {
 
 export function {{to_data_name}}(value: {{value_type_name}}): {{data_type_name}} {
   return {
-  {%- for field_name, field_typedef in field_typedefs %}
-  {{field_name}}: {{field_typedef.to_data_name}}(value.{{field_name}}),
-  {%- endfor %}
+    {%- for field_name, field_typedef in field_typedefs %}
+    {{field_name}}: {{field_typedef.to_data_name}}(value.{{field_name}}),
+    {%- endfor %}
   };
 }
 
