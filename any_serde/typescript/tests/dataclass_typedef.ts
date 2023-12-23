@@ -261,13 +261,13 @@ export type SampleDataclass__DATA = {
 
 export function SampleDataclass__to_data(value: SampleDataclass): SampleDataclass__DATA {
   return {
-  x: float__to_data(value.x),
-  y_vec: SampleDataclass__y_vec__to_data(value.y_vec),
-  description: string__to_data(value.description),
-  validated: bool__to_data(value.validated),
-  pathlike: SampleDataclass__pathlike__to_data(value.pathlike),
-  idx: int__to_data(value.idx),
-  opt: SampleDataclass__opt__to_data(value.opt),
+    x: float__to_data(value.x),
+    y_vec: SampleDataclass__y_vec__to_data(value.y_vec),
+    description: string__to_data(value.description),
+    validated: bool__to_data(value.validated),
+    pathlike: SampleDataclass__pathlike__to_data(value.pathlike),
+    idx: int__to_data(value.idx),
+    opt: SampleDataclass__opt__to_data(value.opt),
   };
 }
 
