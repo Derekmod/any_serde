@@ -239,6 +239,60 @@ export function SampleDataclass__opt__from_data(data: any): SampleDataclass__opt
   return results[0];
 }
 
+export type SampleDataclass__enum_value =
+  | "SampleEnum.FIRST"
+  | "SampleEnum.SECOND";
+
+export type SampleDataclass__enum_value__DATA = SampleDataclass__enum_value
+
+export function SampleDataclass__enum_value__to_data(value: SampleDataclass__enum_value): SampleDataclass__enum_value__DATA {
+  return value;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function SampleDataclass__enum_value__from_data(data: any): SampleDataclass__enum_value {
+  if (data === "SampleEnum.FIRST") {
+    return data;
+  }
+  if (data === "SampleEnum.SECOND") {
+    return data;
+  }
+  const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
+}
+
+export type SampleDataclass__multi_literal =
+  | null
+  | 1
+  | "False"
+  | "sample value"
+  | "SampleEnum.FIRST";
+
+export type SampleDataclass__multi_literal__DATA = SampleDataclass__multi_literal
+
+export function SampleDataclass__multi_literal__to_data(value: SampleDataclass__multi_literal): SampleDataclass__multi_literal__DATA {
+  return value;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function SampleDataclass__multi_literal__from_data(data: any): SampleDataclass__multi_literal {
+  if (data === null) {
+    return data;
+  }
+  if (data === 1) {
+    return data;
+  }
+  if (data === "False") {
+    return data;
+  }
+  if (data === "sample value") {
+    return data;
+  }
+  if (data === "SampleEnum.FIRST") {
+    return data;
+  }
+  const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
+}
+
 export type SampleDataclass = {
   x: number;
   y_vec: SampleDataclass__y_vec;
@@ -247,6 +301,8 @@ export type SampleDataclass = {
   pathlike: SampleDataclass__pathlike;
   idx: int;
   opt: SampleDataclass__opt;
+  enum_value: SampleDataclass__enum_value;
+  multi_literal: SampleDataclass__multi_literal;
 };
 
 export type SampleDataclass__DATA = {
@@ -257,6 +313,8 @@ export type SampleDataclass__DATA = {
   pathlike: SampleDataclass__pathlike__DATA;
   idx: int__DATA;
   opt: SampleDataclass__opt__DATA;
+  enum_value: SampleDataclass__enum_value__DATA;
+  multi_literal: SampleDataclass__multi_literal__DATA;
 };
 
 export function SampleDataclass__to_data(value: SampleDataclass): SampleDataclass__DATA {
@@ -268,6 +326,8 @@ export function SampleDataclass__to_data(value: SampleDataclass): SampleDataclas
     pathlike: SampleDataclass__pathlike__to_data(value.pathlike),
     idx: int__to_data(value.idx),
     opt: SampleDataclass__opt__to_data(value.opt),
+    enum_value: SampleDataclass__enum_value__to_data(value.enum_value),
+    multi_literal: SampleDataclass__multi_literal__to_data(value.multi_literal),
   };
 }
 
@@ -331,6 +391,20 @@ export function SampleDataclass__from_data(data: any): SampleDataclass {
   const fieldData__opt = (dataObj as {opt: any})["opt"];
   const fieldValue__opt = SampleDataclass__opt__from_data(fieldData__opt);
 
+  if (!Object.hasOwn(dataObj, "enum_value")) {
+    const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const fieldData__enum_value = (dataObj as {enum_value: any})["enum_value"];
+  const fieldValue__enum_value = SampleDataclass__enum_value__from_data(fieldData__enum_value);
+
+  if (!Object.hasOwn(dataObj, "multi_literal")) {
+    const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const fieldData__multi_literal = (dataObj as {multi_literal: any})["multi_literal"];
+  const fieldValue__multi_literal = SampleDataclass__multi_literal__from_data(fieldData__multi_literal);
+
   return {
     x: fieldValue__x,
     y_vec: fieldValue__y_vec,
@@ -339,5 +413,7 @@ export function SampleDataclass__from_data(data: any): SampleDataclass {
     pathlike: fieldValue__pathlike,
     idx: fieldValue__idx,
     opt: fieldValue__opt,
+    enum_value: fieldValue__enum_value,
+    multi_literal: fieldValue__multi_literal,
   };
 }
