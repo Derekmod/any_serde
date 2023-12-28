@@ -1,8 +1,10 @@
 from __future__ import annotations
+from enum import Enum
+import json
 
 import types
 import dataclasses
-from typing import Any, Literal, Optional, Type, Union, get_args, get_origin
+from typing import Any, List, Literal, Optional, Type, Union, get_args, get_origin
 
 from any_serde import dataclass_serde, enum_serde
 from any_serde.common import resolve_newtypes
@@ -10,6 +12,9 @@ from any_serde.typescript.typescript_utils import (
     TYPESCRIPT_MODULE_DIR,
     load_template,
 )
+
+LiteralValueType = Union[None, int, bool, str, bytes, Enum]
+
 
 DESERIALIZATION_ERROR_NAME = "any_serde.DeserializationError"
 RAISE_DESERIALIZATION_ERROR = f'const e = Error(); e.name = "{DESERIALIZATION_ERROR_NAME}"; throw e'
@@ -164,6 +169,53 @@ class TypescriptTypedefStore:
 
         return None
 
+    def _create_literal_typedef(
+        self,
+        type_: Type[Any],
+        literal_values: List[LiteralValueType],
+        name: str,
+        filepath: list[str],
+    ) -> TypescriptTypedef:
+        def get_value_str(literal_value: LiteralValueType) -> str:
+            if isinstance(literal_value, bytes):
+                raise NotImplementedError("Cannot use bytes literals in TypeScript yet!")
+
+            from any_serde import to_data
+
+            literal_data = to_data(LiteralValueType, literal_value)
+            literal_str = json.dumps(literal_data)
+            return literal_str
+
+        literal_value_strs = list(map(get_value_str, literal_values))
+        if len(set(literal_value_strs)) < len(literal_value_strs):
+            raise ValueError("Multiple literal values map to the same typescript value!")
+
+        value_type_name = name
+        data_type_name = f"{name}__DATA"
+        to_data_name = f"{name}__to_data"
+        from_data_name = f"{name}__from_data"
+        literal_code_template = load_template(TYPESCRIPT_MODULE_DIR / "literal_typedef.ts.jinja2")
+        literal_code = literal_code_template.render(
+            value_type_name=value_type_name,
+            data_type_name=data_type_name,
+            to_data_name=to_data_name,
+            from_data_name=from_data_name,
+            RAISE_DESERIALIZATION_ERROR=RAISE_DESERIALIZATION_ERROR,
+            literal_value_strs=literal_value_strs,
+        )
+        return TypescriptTypedef(
+            type_=type_,
+            filepath=filepath,
+            code=literal_code,
+            dependencies=[],
+            value_type_name=value_type_name,
+            value_type_requires_import=True,
+            data_type_name=data_type_name,
+            data_type_requires_import=True,
+            to_data_name=to_data_name,
+            from_data_name=from_data_name,
+        )
+
     def _create_typescript_typedef(
         self,
         type_: Type[Any],
@@ -172,7 +224,12 @@ class TypescriptTypedefStore:
     ) -> TypescriptTypedef:
         """Creates a new typedef."""
         if enum_serde.is_enum_type(type_):
-            raise NotImplementedError("TODO: handle enums")
+            return self._create_literal_typedef(
+                type_=type_,
+                literal_values=list(type_),
+                name=name,
+                filepath=filepath,
+            )
 
         if dataclass_serde.is_dataclass_type(type_):
             value_type_name = name
@@ -299,7 +356,12 @@ class TypescriptTypedefStore:
             raise NotImplementedError("TODO: handle tuples")
 
         if type_origin is Literal:
-            raise NotImplementedError("TODO: handle literals")
+            return self._create_literal_typedef(
+                type_=type_,
+                literal_values=type_args,
+                name=name,
+                filepath=filepath,
+            )
 
         raise NotImplementedError(f"Unrecognized type: {type_}")
 

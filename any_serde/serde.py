@@ -157,7 +157,8 @@ def to_data(type_: Type[T_Any], item: T_Any) -> JSON:
         return json_serde.to_data(item)  # type: ignore[arg-type]
 
     if type_ is bytes:
-        assert isinstance(item, bytes)
+        if not isinstance(item, bytes):
+            raise InvalidSerializationException("Item is not bytes!")
         return bytes_serde.to_data(type_, item)  # type: ignore[arg-type]
 
     type_origin_nullable = get_origin(type_)
