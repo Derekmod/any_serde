@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="any_serde",
-    version="0.2.12",
+    version="0.2.13",
     packages=find_packages(),
     include_package_data=True,
     install_requires=[],
@@ -20,6 +20,7 @@ setup(
                 "any_serde/typescript/float_typedef.ts.jinja2",
                 "any_serde/typescript/int_typedef.ts.jinja2",
                 "any_serde/typescript/list_typedef.ts.jinja2",
+                "any_serde/typescript/literal_typedef.ts.jinja2",
                 "any_serde/typescript/none_typedef.ts.jinja2",
                 "any_serde/typescript/nonetype_typedef.ts.jinja2",
                 "any_serde/typescript/string_typedef.ts.jinja2",

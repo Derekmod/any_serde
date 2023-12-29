@@ -182,7 +182,7 @@ class TypescriptTypedefStore:
 
             from any_serde import to_data
 
-            literal_data = to_data(LiteralValueType, literal_value)
+            literal_data = to_data(LiteralValueType, literal_value)  # type: ignore[arg-type]
             literal_str = json.dumps(literal_data)
             return literal_str
 
@@ -226,7 +226,7 @@ class TypescriptTypedefStore:
         if enum_serde.is_enum_type(type_):
             return self._create_literal_typedef(
                 type_=type_,
-                literal_values=list(type_),
+                literal_values=list(type_),  # type: ignore[call-overload]
                 name=name,
                 filepath=filepath,
             )
@@ -358,7 +358,7 @@ class TypescriptTypedefStore:
         if type_origin is Literal:
             return self._create_literal_typedef(
                 type_=type_,
-                literal_values=type_args,
+                literal_values=type_args,  # type: ignore[arg-type]
                 name=name,
                 filepath=filepath,
             )
