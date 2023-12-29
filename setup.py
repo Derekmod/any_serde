@@ -20,6 +20,7 @@ setup(
                 "any_serde/typescript/float_typedef.ts.jinja2",
                 "any_serde/typescript/int_typedef.ts.jinja2",
                 "any_serde/typescript/list_typedef.ts.jinja2",
+                "any_serde/typescript/literal_typedef.ts.jinja2",
                 "any_serde/typescript/none_typedef.ts.jinja2",
                 "any_serde/typescript/nonetype_typedef.ts.jinja2",
                 "any_serde/typescript/string_typedef.ts.jinja2",
