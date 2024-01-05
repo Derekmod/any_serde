@@ -120,7 +120,7 @@ def from_data(
         assert type(item) == type(literal_value)
 
         if item != literal_value:
-            raise InvalidSerializationException("Deserialized value does not match Literal type!")
+            raise InvalidDeserializationException("Deserialized value does not match Literal type!")
 
         return item  # type: ignore
 
