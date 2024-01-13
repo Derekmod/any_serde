@@ -263,7 +263,7 @@ export function SampleDataclass__enum_value__from_data(data: any): SampleDatacla
 export type SampleDataclass__multi_literal =
   | null
   | 1
-  | "False"
+  | false
   | "sample value"
   | "SampleEnum.FIRST";
 
@@ -281,7 +281,7 @@ export function SampleDataclass__multi_literal__from_data(data: any): SampleData
   if (data === 1) {
     return data;
   }
-  if (data === "False") {
+  if (data === false) {
     return data;
   }
   if (data === "sample value") {

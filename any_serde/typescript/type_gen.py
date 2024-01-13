@@ -182,7 +182,7 @@ class TypescriptTypedefStore:
 
             from any_serde import to_data
 
-            literal_data = to_data(LiteralValueType, literal_value)  # type: ignore[arg-type]
+            literal_data = to_data(type_, literal_value)  # type: ignore[arg-type]
             literal_str = json.dumps(literal_data)
             return literal_str
 
