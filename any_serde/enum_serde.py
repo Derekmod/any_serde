@@ -1,3 +1,4 @@
+import copy
 from enum import Enum
 from typing import Type, TypeVar, Any
 from any_serde import json_serde
@@ -49,6 +50,8 @@ def to_data(type_: Type[T_Enum], enum_value: Enum) -> JSON:
     return str(enum_value)
 
 
-def serialize_by_value(type_: Type[Enum]) -> None:
+def serialize_by_value(type_: Type[T_Enum]) -> Type[T_Enum]:
     assert is_enum_type(type_)
-    setattr(type_, ATTR_SERIALIZE_BY_VALUE, True)
+    new_type = copy.deepcopy(type_)  # NOCOMMIT doesn't seem to set the field for the new type only
+    setattr(new_type, ATTR_SERIALIZE_BY_VALUE, True)
+    return new_type

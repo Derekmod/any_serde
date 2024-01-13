@@ -143,10 +143,10 @@ def to_data(type_: Type[T_Any], item: T_Any) -> JSON:
 
     if primitives_serde.is_primitive_type(type_):
         # TODO check type matches item
-        return primitives_serde.to_data(type_, item)  # type: ignore
+        return primitives_serde.to_data(type_, item)  # type: ignore[type-var]
 
     if enum_serde.is_enum_type(type_):
-        return enum_serde.to_data(item)  # type: ignore
+        return enum_serde.to_data(type_, item)  # type: ignore[type-var, arg-type]
 
     if dataclass_serde.is_dataclass_type(type_):
         if type(item) is not type_:
