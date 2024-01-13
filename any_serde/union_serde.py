@@ -8,7 +8,13 @@ from typing import (
     get_args,
     get_origin,
 )
-from any_serde.common import InvalidSerializationException, InvalidDeserializationException, JSON, resolve_newtypes
+from any_serde.common import (
+    InvalidSerializationException,
+    InvalidDeserializationException,
+    JSON,
+    resolve_newtypes,
+    truncate_str,
+)
 
 
 T_Any = TypeVar("T_Any")
@@ -60,4 +66,4 @@ def to_data(
         except InvalidSerializationException:
             pass
 
-    raise InvalidSerializationException("Could not serialize from any union option.")
+    raise InvalidSerializationException(f"No union option for {type_} matches {truncate_str(str(item))}")

@@ -41,12 +41,19 @@ def from_data(type_: Type[T_Enum], data: JSON) -> T_Enum:
 
 
 def to_data(type_: Type[T_Enum], enum_value: Enum) -> JSON:
+    assert is_enum_type(type_)
+
+    try:
+        mapped_value = type_[enum_value.name]
+    except KeyError:
+        raise InvalidSerializationException(f"Could not convert {enum_value} ({type(enum_value)} to {type_})")
+
     if getattr(type_, ATTR_SERIALIZE_BY_VALUE, False):
         try:
-            return json_serde.validate_json(enum_value.value)
+            return json_serde.validate_json(mapped_value.value)
         except ValueError:
-            raise InvalidSerializationException(f"[{type_}] {enum_value} has invalid value!")
-    return str(enum_value)
+            raise InvalidSerializationException(f"[{type_}] {mapped_value} has invalid value!")
+    return str(mapped_value)
 
 
 def serialize_by_value(type_: Type[T_Enum]) -> Type[T_Enum]:
