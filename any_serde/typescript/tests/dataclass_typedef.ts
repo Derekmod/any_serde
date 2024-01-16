@@ -241,9 +241,9 @@ export function SampleDataclass__opt__from_data(data: any): SampleDataclass__opt
 
 export type SampleDataclass__enum_value =
   | "SampleEnum.FIRST"
-  | "SampleEnum.SECOND";
+  | "SampleEnum.SECOND";;
 
-export type SampleDataclass__enum_value__DATA = SampleDataclass__enum_value
+export type SampleDataclass__enum_value__DATA = SampleDataclass__enum_value;
 
 export function SampleDataclass__enum_value__to_data(value: SampleDataclass__enum_value): SampleDataclass__enum_value__DATA {
   return value;
@@ -265,9 +265,9 @@ export type SampleDataclass__multi_literal =
   | 1
   | false
   | "sample value"
-  | "SampleEnum.FIRST";
+  | "SampleEnum.FIRST";;
 
-export type SampleDataclass__multi_literal__DATA = SampleDataclass__multi_literal
+export type SampleDataclass__multi_literal__DATA = SampleDataclass__multi_literal;
 
 export function SampleDataclass__multi_literal__to_data(value: SampleDataclass__multi_literal): SampleDataclass__multi_literal__DATA {
   return value;
@@ -295,9 +295,9 @@ export function SampleDataclass__multi_literal__from_data(data: any): SampleData
 
 export type SampleDataclass__enum_by_value =
   | 1
-  | 10;
+  | 10;;
 
-export type SampleDataclass__enum_by_value__DATA = SampleDataclass__enum_by_value
+export type SampleDataclass__enum_by_value__DATA = SampleDataclass__enum_by_value;
 
 export function SampleDataclass__enum_by_value__to_data(value: SampleDataclass__enum_by_value): SampleDataclass__enum_by_value__DATA {
   return value;

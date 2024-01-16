@@ -1,9 +1,9 @@
 export type {{value_type_name}} =
   {%- for literal_value_str in literal_value_strs %}
   | {{literal_value_str}}{% if loop.last %};{% endif %}
-  {%- endfor %}
+  {%- endfor %};
 
-export type {{data_type_name}} = {{value_type_name}}
+export type {{data_type_name}} = {{value_type_name}};
 
 export function {{to_data_name}}(value: {{value_type_name}}): {{data_type_name}} {
   return value;
