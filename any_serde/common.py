@@ -50,3 +50,10 @@ class Undefined:
 
 class UndefinedValueException(Exception):
     """Indicates that an Undefined was (correctly) serialized."""
+
+
+def truncate_str(s: str, max_length: int = 80) -> str:
+    if len(s) <= max_length:
+        return s
+
+    return s[:48] + "..." + s[-49:]

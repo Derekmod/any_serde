@@ -243,7 +243,7 @@ export type SampleDataclass__enum_value =
   | "SampleEnum.FIRST"
   | "SampleEnum.SECOND";
 
-export type SampleDataclass__enum_value__DATA = SampleDataclass__enum_value
+export type SampleDataclass__enum_value__DATA = SampleDataclass__enum_value;
 
 export function SampleDataclass__enum_value__to_data(value: SampleDataclass__enum_value): SampleDataclass__enum_value__DATA {
   return value;
@@ -263,11 +263,11 @@ export function SampleDataclass__enum_value__from_data(data: any): SampleDatacla
 export type SampleDataclass__multi_literal =
   | null
   | 1
-  | "False"
+  | false
   | "sample value"
   | "SampleEnum.FIRST";
 
-export type SampleDataclass__multi_literal__DATA = SampleDataclass__multi_literal
+export type SampleDataclass__multi_literal__DATA = SampleDataclass__multi_literal;
 
 export function SampleDataclass__multi_literal__to_data(value: SampleDataclass__multi_literal): SampleDataclass__multi_literal__DATA {
   return value;
@@ -281,13 +281,34 @@ export function SampleDataclass__multi_literal__from_data(data: any): SampleData
   if (data === 1) {
     return data;
   }
-  if (data === "False") {
+  if (data === false) {
     return data;
   }
   if (data === "sample value") {
     return data;
   }
   if (data === "SampleEnum.FIRST") {
+    return data;
+  }
+  const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
+}
+
+export type SampleDataclass__enum_by_value =
+  | 1
+  | 10;
+
+export type SampleDataclass__enum_by_value__DATA = SampleDataclass__enum_by_value;
+
+export function SampleDataclass__enum_by_value__to_data(value: SampleDataclass__enum_by_value): SampleDataclass__enum_by_value__DATA {
+  return value;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function SampleDataclass__enum_by_value__from_data(data: any): SampleDataclass__enum_by_value {
+  if (data === 1) {
+    return data;
+  }
+  if (data === 10) {
     return data;
   }
   const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
@@ -303,6 +324,7 @@ export type SampleDataclass = {
   opt: SampleDataclass__opt;
   enum_value: SampleDataclass__enum_value;
   multi_literal: SampleDataclass__multi_literal;
+  enum_by_value: SampleDataclass__enum_by_value;
 };
 
 export type SampleDataclass__DATA = {
@@ -315,6 +337,7 @@ export type SampleDataclass__DATA = {
   opt: SampleDataclass__opt__DATA;
   enum_value: SampleDataclass__enum_value__DATA;
   multi_literal: SampleDataclass__multi_literal__DATA;
+  enum_by_value: SampleDataclass__enum_by_value__DATA;
 };
 
 export function SampleDataclass__to_data(value: SampleDataclass): SampleDataclass__DATA {
@@ -328,6 +351,7 @@ export function SampleDataclass__to_data(value: SampleDataclass): SampleDataclas
     opt: SampleDataclass__opt__to_data(value.opt),
     enum_value: SampleDataclass__enum_value__to_data(value.enum_value),
     multi_literal: SampleDataclass__multi_literal__to_data(value.multi_literal),
+    enum_by_value: SampleDataclass__enum_by_value__to_data(value.enum_by_value),
   };
 }
 
@@ -405,6 +429,13 @@ export function SampleDataclass__from_data(data: any): SampleDataclass {
   const fieldData__multi_literal = (dataObj as {multi_literal: any})["multi_literal"];
   const fieldValue__multi_literal = SampleDataclass__multi_literal__from_data(fieldData__multi_literal);
 
+  if (!Object.hasOwn(dataObj, "enum_by_value")) {
+    const e = Error(); e.name = "any_serde.DeserializationError"; throw e;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const fieldData__enum_by_value = (dataObj as {enum_by_value: any})["enum_by_value"];
+  const fieldValue__enum_by_value = SampleDataclass__enum_by_value__from_data(fieldData__enum_by_value);
+
   return {
     x: fieldValue__x,
     y_vec: fieldValue__y_vec,
@@ -415,5 +446,6 @@ export function SampleDataclass__from_data(data: any): SampleDataclass {
     opt: fieldValue__opt,
     enum_value: fieldValue__enum_value,
     multi_literal: fieldValue__multi_literal,
+    enum_by_value: fieldValue__enum_by_value,
   };
 }
