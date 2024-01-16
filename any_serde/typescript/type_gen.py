@@ -6,7 +6,8 @@ import types
 import dataclasses
 from typing import Any, List, Literal, Optional, Type, Union, get_args, get_origin
 
-from any_serde import dataclass_serde, enum
+from any_serde import dataclass_serde
+import any_serde.enum
 from any_serde.common import resolve_newtypes
 from any_serde.typescript.typescript_utils import (
     TYPESCRIPT_MODULE_DIR,
@@ -223,7 +224,7 @@ class TypescriptTypedefStore:
         filepath: list[str],
     ) -> TypescriptTypedef:
         """Creates a new typedef."""
-        if enum.is_enum_type(type_):
+        if any_serde.enum.is_enum_type(type_):
             return self._create_literal_typedef(
                 type_=type_,
                 literal_values=list(type_),  # type: ignore[call-overload]
