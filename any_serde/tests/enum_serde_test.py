@@ -1,7 +1,7 @@
 import enum
 import pytest
 from any_serde import from_data, to_data
-from any_serde import enum_serde
+import any_serde.enum
 from any_serde.common import InvalidDeserializationException
 
 
@@ -10,7 +10,7 @@ class UnspecifiedSimpleEnum(enum.Enum):
     KEY2 = "y"
 
 
-@enum_serde.serialize_by_value
+@any_serde.enum.serialize_by_value
 class UnspecifiedSimpleEnumByValue(enum.Enum):
     KEY1 = "x"
     KEY2 = "y"

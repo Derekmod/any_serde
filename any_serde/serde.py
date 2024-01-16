@@ -17,7 +17,7 @@ from any_serde.common import (
     Undefined,
     UndefinedValueException,
 )
-from any_serde import bytes_serde, enum_serde, json_serde, primitives_serde, dataclass_serde, union_serde
+from any_serde import bytes_serde, enum, json_serde, primitives_serde, dataclass_serde, union_serde
 
 
 T_Any = TypeVar("T_Any")
@@ -38,8 +38,8 @@ def from_data(
     if primitives_serde.is_primitive_type(type_):
         return primitives_serde.from_data(type_, data)  # type: ignore
 
-    if enum_serde.is_enum_type(type_):
-        return enum_serde.from_data(type_, data)  # type: ignore
+    if enum.is_enum_type(type_):
+        return enum.from_data(type_, data)  # type: ignore
 
     if dataclass_serde.is_dataclass_type(type_):
         return dataclass_serde.from_data(type_, data)
@@ -145,8 +145,8 @@ def to_data(type_: Type[T_Any], item: T_Any) -> JSON:
         # TODO check type matches item
         return primitives_serde.to_data(type_, item)  # type: ignore[type-var]
 
-    if enum_serde.is_enum_type(type_):
-        return enum_serde.to_data(type_, item)  # type: ignore[type-var, arg-type]
+    if enum.is_enum_type(type_):
+        return enum.to_data(type_, item)  # type: ignore[type-var, arg-type]
 
     if dataclass_serde.is_dataclass_type(type_):
         if type(item) is not type_:

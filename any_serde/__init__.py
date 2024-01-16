@@ -13,6 +13,9 @@ from .dataclass_serde import (
     register_serialization_renames,
     allow_unknown_data_keys,
 )
+from .enum import (
+    serialize_by_value,
+)
 
 __all__ = [
     "from_data",
@@ -24,4 +27,5 @@ __all__ = [
     "dataclass_from_environ",
     "register_serialization_renames",
     "allow_unknown_data_keys",
+    "serialize_by_value",
 ]
