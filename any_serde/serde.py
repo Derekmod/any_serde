@@ -40,8 +40,6 @@ def from_data(
     if any_serde.enum.is_enum_type(type_):
         return any_serde.enum.from_data(type_, data)  # type: ignore
 
-    print(f"{type_} is not enum")
-
     if primitives_serde.is_primitive_type(type_):
         return primitives_serde.from_data(type_, data)  # type: ignore
 

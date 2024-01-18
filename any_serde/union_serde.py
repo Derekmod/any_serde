@@ -52,11 +52,9 @@ def from_data(
     from any_serde import serde
 
     for union_arg in type_args:
-        print(f"{union_arg=} of {type_args=}, ")
         try:
             return serde.from_data(union_arg, data)
-        except InvalidDeserializationException as err:
-            print(f"failed {union_arg=} because {err}")
+        except InvalidDeserializationException:
             pass
 
     raise InvalidDeserializationException("Could not deserialize to any union option.")
@@ -71,11 +69,9 @@ def to_data(
     from any_serde import serde
 
     for union_arg in type_args:
-        print(f"{union_arg=} of {type_args=}")
         try:
             return serde.to_data(union_arg, item)
-        except InvalidSerializationException as err:
-            print(f"failed {union_arg=} because {err}")
+        except InvalidSerializationException:
             pass
 
     raise InvalidSerializationException(f"No union option for {type_} matches {truncate_str(str(item))}")
