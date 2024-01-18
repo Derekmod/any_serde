@@ -1,3 +1,4 @@
+import enum
 import types
 from typing import (
     Any,
@@ -147,6 +148,8 @@ def to_data(type_: Type[T_Any], item: T_Any) -> JSON:
         return primitives_serde.to_data(type_, item)  # type: ignore[type-var]
 
     if any_serde.enum.is_enum_type(type_):
+        if not isinstance(item, enum.Enum):
+            raise InvalidSerializationException("Cannot serialize non-enum as Enum")
         return any_serde.enum.to_data(type_, item)  # type: ignore[type-var, arg-type]
 
     if dataclass_serde.is_dataclass_type(type_):
