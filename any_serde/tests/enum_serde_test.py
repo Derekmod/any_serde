@@ -42,7 +42,6 @@ def test_unspecified_enum() -> None:
 
 
 def test_str_fallback() -> None:
-    print("start")
     expected_obj1 = UnspecifiedSimpleEnumByValue.KEY1
     expected_data1 = "x"
     assert (
