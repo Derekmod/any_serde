@@ -1,4 +1,5 @@
 import enum
+from typing import Union
 import pytest
 from any_serde import from_data, to_data
 import any_serde.enum
@@ -38,3 +39,41 @@ def test_unspecified_enum() -> None:
         from_data(UnspecifiedSimpleEnumByValue, "UnspecifiedSimpleEnum.KEY1")
 
     assert from_data(UnspecifiedSimpleEnumByValue, "y") == UnspecifiedSimpleEnumByValue.KEY2
+
+
+def test_str_fallback() -> None:
+    expected_obj1 = UnspecifiedSimpleEnumByValue.KEY1
+    expected_data1 = "x"
+    assert (
+        to_data(
+            Union[UnspecifiedSimpleEnumByValue, str],  # type: ignore[arg-type]
+            expected_obj1,
+        )
+        == expected_data1
+    )
+    assert (
+        from_data(
+            Union[UnspecifiedSimpleEnumByValue, str],  # type: ignore[arg-type]
+            expected_data1,
+        )
+        == expected_obj1
+    )
+
+    expected_obj2 = "other value"
+    expected_data2 = "other value"
+    assert (
+        to_data(
+            Union[UnspecifiedSimpleEnumByValue, str],  # type: ignore[arg-type]
+            expected_obj2,
+        )
+        == expected_data2
+    )
+    assert (
+        from_data(
+            Union[UnspecifiedSimpleEnumByValue, str],  # type: ignore[arg-type]
+            expected_data2,
+        )
+        == expected_obj2
+    )
+
+    assert from_data(Union[str, UnspecifiedSimpleEnumByValue], "x") == "x"  # type: ignore[arg-type]

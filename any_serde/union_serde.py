@@ -1,7 +1,9 @@
 import types
 from typing import (
     Any,
+    List,
     Sequence,
+    Set,
     Type,
     TypeVar,
     Union,
@@ -30,7 +32,13 @@ def _get_union_args(type_: Type[T_Any]) -> Sequence[Type[Any]]:
 
     assert type_origin in (Union, types.UnionType), f"Calling union serde on non-union type: {type_}"
 
-    deduped_type_args = list(set(type_args))
+    seen: Set[Type[Any]] = set()
+    deduped_type_args: List[Type[Any]] = []
+    for type_arg in type_args:
+        if type_arg in seen:
+            continue
+        deduped_type_args.append(type_arg)
+        seen.add(type_arg)
 
     return deduped_type_args
 

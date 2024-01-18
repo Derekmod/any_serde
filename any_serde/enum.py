@@ -41,7 +41,8 @@ def from_data(type_: Type[T_Enum], data: JSON) -> T_Enum:
 
 
 def to_data(type_: Type[T_Enum], enum_value: Enum) -> JSON:
-    assert is_enum_type(type_)
+    assert is_enum_type(type_), f"Trying enum.to_data on type {type_}"
+    assert isinstance(enum_value, Enum), f"Trying enum.to_data on value type {type(enum_value)}"
 
     try:
         mapped_value = type_[enum_value.name]
