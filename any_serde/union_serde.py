@@ -1,7 +1,9 @@
 import types
 from typing import (
     Any,
+    List,
     Sequence,
+    Set,
     Type,
     TypeVar,
     Union,
@@ -30,7 +32,13 @@ def _get_union_args(type_: Type[T_Any]) -> Sequence[Type[Any]]:
 
     assert type_origin in (Union, types.UnionType), f"Calling union serde on non-union type: {type_}"
 
-    deduped_type_args = list(set(type_args))
+    seen: Set[Type[Any]] = set()
+    deduped_type_args: List[Type[Any]] = []
+    for type_arg in type_args:
+        if type_arg in seen:
+            continue
+        deduped_type_args.append(type_arg)
+        seen.add(type_arg)
 
     return deduped_type_args
 
@@ -44,9 +52,11 @@ def from_data(
     from any_serde import serde
 
     for union_arg in type_args:
+        print(f"{union_arg=} of {type_args=}, ")
         try:
             return serde.from_data(union_arg, data)
-        except InvalidDeserializationException:
+        except InvalidDeserializationException as err:
+            print(f"failed {union_arg=} because {err}")
             pass
 
     raise InvalidDeserializationException("Could not deserialize to any union option.")
@@ -61,9 +71,11 @@ def to_data(
     from any_serde import serde
 
     for union_arg in type_args:
+        print(f"{union_arg=} of {type_args=}")
         try:
             return serde.to_data(union_arg, item)
-        except InvalidSerializationException:
+        except InvalidSerializationException as err:
+            print(f"failed {union_arg=} because {err}")
             pass
 
     raise InvalidSerializationException(f"No union option for {type_} matches {truncate_str(str(item))}")
