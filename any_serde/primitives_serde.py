@@ -43,6 +43,10 @@ def to_data(type_: Type[T_JSONPrimitive], item: T_JSONPrimitive) -> JSON:
             )
         return item
 
+    item_type = type(item)
+    if type_ is float and item_type is int:
+        return item
+
     if type(item) is not type_:
         raise InvalidSerializationException(
             f"Failed serialization check with {item} (type={type(item)}) and declared type {type_}!"
