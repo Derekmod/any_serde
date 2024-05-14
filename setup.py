@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="any_serde",
-    version="0.2.17",
+    version="0.2.18",
     packages=find_packages(),
     include_package_data=True,
     install_requires=[],

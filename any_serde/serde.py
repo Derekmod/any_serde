@@ -46,7 +46,7 @@ def from_data(
     if dataclass_serde.is_dataclass_type(type_):
         return dataclass_serde.from_data(type_, data)
 
-    if type_ is JSON:
+    if type_ is JSON or type_ is Any:
         return json_serde.from_data(data)  # type: ignore[return-value]
 
     if type_ is bytes:
@@ -157,7 +157,7 @@ def to_data(type_: Type[T_Any], item: T_Any) -> JSON:
             raise InvalidSerializationException(f"Specified type_ {type_} does not match item type {type(item)}!")
         return dataclass_serde.to_data(type_, item)
 
-    if type_ is JSON:
+    if type_ is JSON or type_ is Any:
         return json_serde.to_data(item)  # type: ignore[arg-type]
 
     if type_ is bytes:
